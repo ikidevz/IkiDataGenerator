@@ -9,6 +9,6 @@ pyproject.toml
 setup.cfg
 features.txt
 test.py
-ARTICLE.MD
+ARTICLE.md
 output/*
 structure.py
