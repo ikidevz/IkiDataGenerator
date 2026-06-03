@@ -1,0 +1,29 @@
+Metadata-Version: 2.4
+Name: iki-data-generator
+Version: 0.1.0
+Summary: A synthetic data generation library with 700+ built-in data fields across 22 categories.
+License: MIT
+Project-URL: Homepage, https://github.com/ikidevz/IkiDataGenerator
+Project-URL: Repository, https://github.com/ikidevz/IkiDataGenerator
+Project-URL: Issues, https://github.com/ikidevz/IkiDataGenerator/issues
+Keywords: synthetic,data,generator,faker,testing,mock
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Testing
+Classifier: Topic :: Utilities
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: duckdb==1.4.2
+Requires-Dist: lorem_text==3.0
+Requires-Dist: numpy==2.3.5
+Requires-Dist: openpyxl==3.1.5
+Requires-Dist: pandas==2.3.3
+Requires-Dist: pyarrow==22.0.0
+Requires-Dist: python_bcrypt==0.3.2
+Requires-Dist: python-dateutil==2.9.0.post0
+Requires-Dist: rstr==3.2.2
