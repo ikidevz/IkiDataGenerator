@@ -8,16 +8,14 @@ from ikidatagen import IkiDataGenerator
 
 schema = [
     "row_number",
-    "title",                    # Mr., Mrs., Dr., etc.
+    "title",
     "first_name",
-    # "middle_name",
     "last_name",
     {
         "key_label": "datetime",
         "label": "DOB",
     },
-    "gender_binary",            # Male, Female
-    "gender_binary",          # Male/Female/Non-binary
+    "gender_binary",
     "nationality",
     {
         "key_label": "ssn",

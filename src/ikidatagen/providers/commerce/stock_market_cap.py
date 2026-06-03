@@ -1,6 +1,6 @@
 import random
 from ..base_provider import BaseProvider
-from providers.commerce.money import MoneyProvider
+from ..commerce.money import MoneyProvider
 
 
 class StockMarketCapProvider(BaseProvider):

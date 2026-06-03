@@ -36,17 +36,12 @@ schema = [
         "options": {"blank_percentage": 15}  # 15% missing DOBs
     },
     {
-        "key_label": # "middle_name",
-        "label": "Middle Name",
-        "options": {"blank_percentage": 50}  # 50% missing middle names
-    },
-    {
-        "key_label": "company",
+        "key_label": "company_name",
         "label": "Company",
         "options": {"blank_percentage": 40}  # 40% missing companies
     },
     {
-        "key_label": "website",
+        "key_label": "url",
         "label": "Website",
         "options": {"blank_percentage": 60}  # 60% missing websites
     },

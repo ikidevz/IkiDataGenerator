@@ -1,5 +1,5 @@
 from ..base_provider import BaseProvider
-from providers.basic.datetime import DatetimeProvider
+from ..basic.datetime import DatetimeProvider
 import datetime
 from dateutil.relativedelta import relativedelta
 

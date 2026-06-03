@@ -6,4 +6,4 @@ class CryptocurrencyWalletProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        return self.get_random_data_by_list(self.cryptocurrency['wallet'])
+        return self.get_random_data_by_list(self.crypto['wallet'])

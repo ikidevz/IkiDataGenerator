@@ -11,13 +11,12 @@ schema = [
     "first_name",
     "last_name",
     {
-        "key_label": "medication_name",
+        "key_label": "drug_name_brand",
         "label": "Medication",
     },
     {
-        "key_label": "custom_list",
+        "key_label": "medication_dosage",
         "label": "Dosage",
-        "options": {"values": ["100mg", "250mg", "500mg", "1000mg"]}
     },
     {
         "key_label": "custom_list",

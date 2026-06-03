@@ -15,11 +15,11 @@ schema = [
         "label": "Diagnosis",
     },
     {
-        "key_label": "icd10_diagnosis",
+        "key_label": "icd10_diagnosis_code",
         "label": "ICD-10 Code",
     },
     {
-        "key_label": "symptom_name",
+        "key_label": "symptom",
         "label": "Primary Symptom",
     },
     {
@@ -32,7 +32,7 @@ schema = [
         "options": {"values": ["Mild", "Moderate", "Severe"]}
     },
     {
-        "key_label": "medication_name",
+        "key_label": "drug_name_brand",
         "label": "Prescribed Medication",
     },
     {

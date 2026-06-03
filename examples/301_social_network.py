@@ -16,7 +16,7 @@ schema = [
         "label": "Email",
     },
     {
-        "key_label": "profile_picture_url",
+        "key_label": "dummy_image_url",
         "label": "Profile Picture",
         "options": {"blank_percentage": 20}
     },

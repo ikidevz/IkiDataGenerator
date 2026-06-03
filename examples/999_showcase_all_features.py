@@ -7,11 +7,11 @@ Run this to see what's possible!
 
 from ikidatagen import IkiDataGenerator
 
-print("🎪 COMPLETE FEATURE SHOWCASE FOR IKI DATA GENERATOR")
+print("COMPLETE FEATURE SHOWCASE FOR IKI DATA GENERATOR")
 print("=" * 60)
 
 # Feature 1: Simple String Schema
-print("\n1️⃣ Simple String Schema (Shorthand)")
+print("\n Simple String Schema (Shorthand)")
 print("-" * 60)
 simple_schema = ["first_name", "last_name", "email_address", "country"]
 print(f"Schema: {simple_schema}")
@@ -20,7 +20,7 @@ IkiDataGenerator(simple_schema).many(50).export(
 print("[OK] Generated 50 records with simple schema")
 
 # Feature 2: Full Dict Control
-print("\n2️⃣ Full Control with Dicts")
+print("\n Full Control with Dicts")
 print("-" * 60)
 dict_schema = [
     {
@@ -42,7 +42,7 @@ IkiDataGenerator(dict_schema).many(50).export("showcase_dict", formats=["csv"])
 print("[OK] Generated 50 records with full control")
 
 # Feature 3: Custom Labels
-print("\n3️⃣ Custom Column Labels")
+print("\n Custom Column Labels")
 print("-" * 60)
 label_schema = [
     {"key_label": "first_name", "label": "Customer First Name"},
@@ -54,7 +54,7 @@ IkiDataGenerator(label_schema).many(50).export(
 print("[OK] Custom labels in output columns")
 
 # Feature 4: Templates
-print("\n4️⃣ Templates - Combining Fields")
+print("\n Templates - Combining Fields")
 print("-" * 60)
 template_schema = [
     "first_name",
@@ -78,7 +78,7 @@ IkiDataGenerator(template_schema).many(50).export(
 print("[OK] Generated combined fields with templates")
 
 # Feature 5: Regex Patterns
-print("\n5️⃣ Regular Expressions - Custom Patterns")
+print("\n Regular Expressions - Custom Patterns")
 print("-" * 60)
 regex_schema = [
     "first_name",
@@ -99,20 +99,19 @@ IkiDataGenerator(regex_schema).many(50).export(
 print("[OK] Generated custom pattern data with regex")
 
 # Feature 6: Blank Percentages
-print("\n6️⃣ Blank Percentages - Missing Data Simulation")
+print("\n Blank Percentages - Missing Data Simulation")
 print("-" * 60)
 blank_schema = [
     {"key_label": "row_number", "options": {"blank_percentage": 0}},
     {"key_label": "first_name", "options": {"blank_percentage": 5}},
     {"key_label": "phone", "options": {"blank_percentage": 40}},
-    {"key_label": # "middle_name", "options": {"blank_percentage": 60}},
 ]
 IkiDataGenerator(blank_schema).many(50).export(
     "showcase_blanks", formats=["csv"])
 print("[OK] Generated data with realistic missing values")
 
 # Feature 7: Numeric Ranges
-print("\n7️⃣ Numeric Ranges - Min/Max Control")
+print("\n Numeric Ranges - Min/Max Control")
 print("-" * 60)
 numeric_schema = [
     "product_name",
@@ -125,7 +124,7 @@ IkiDataGenerator(numeric_schema).many(50).export(
 print("[OK] Generated numeric data with ranges")
 
 # Feature 8: Custom Lists
-print("\n8️⃣ Custom Lists - Specific Value Options")
+print("\n Custom Lists - Specific Value Options")
 print("-" * 60)
 list_schema = [
     "first_name",
@@ -146,7 +145,7 @@ IkiDataGenerator(list_schema).many(50).export(
 print("[OK] Generated data from custom value lists")
 
 # Feature 9: Multiple Export Formats
-print("\n9️⃣ Multiple Export Formats")
+print("\n Multiple Export Formats")
 print("-" * 60)
 format_schema = ["first_name", "last_name", "email_address", "country"]
 IkiDataGenerator(format_schema).many(100).export(
@@ -156,13 +155,19 @@ IkiDataGenerator(format_schema).many(100).export(
 print("[OK] Exported to: CSV, JSON, TSV, Parquet")
 
 # Feature 10: All Major Categories
-print("\n🔟 All 22 Data Categories")
+print("\n All 22 Data Categories")
 print("-" * 60)
 categories_schema = [
     # Personal
-    "first_name", "last_name", "gender_binary", "date_of_birth",
+    "first_name", "last_name", "gender_binary", {
+        "key_label": "datetime",
+        "label": "DOB",
+    },
     # Contact
-    "email_address", "phone_number", "username",
+    "email_address", {
+        "key_label": "phone",
+        "label": "phone_number",
+    }, "username",
     # Location
     "country", "city", "street_address",
     # Finance
@@ -182,7 +187,7 @@ IkiDataGenerator(categories_schema).many(50).export(
 print("[OK] Data from 10+ categories combined in one dataset")
 
 # Feature 11: Large Datasets
-print("\n1️⃣1️⃣ Large Dataset Generation")
+print("\n Large Dataset Generation")
 print("-" * 60)
 print("Generating 100,000 records with Parquet (efficient format)...")
 large_schema = ["first_name", "last_name", "email_address", "country"]
@@ -191,7 +196,7 @@ IkiDataGenerator(large_schema).many(100000).export(
 print("[OK] Generated 100,000 records efficiently")
 
 # Feature 12: Real-World Scenario
-print("\n1️⃣2️⃣ Real-World E-Commerce Scenario")
+print("\n Real-World E-Commerce Scenario")
 print("-" * 60)
 ecommerce_schema = [
     "row_number",
@@ -233,7 +238,7 @@ print("   - showcase_formats.* (csv, json, tsv, parquet)")
 print("   - showcase_categories.json")
 print("   - showcase_large.parquet (100K records!)")
 print("   - showcase_ecommerce.* (csv, json)")
-print("\n💡 Next steps:")
+print("\n Next steps:")
 print("   1. Review the output files")
 print("   2. Try modifying the schemas above")
 print("   3. Check examples/ folder for more use cases")

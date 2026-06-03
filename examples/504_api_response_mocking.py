@@ -8,9 +8,8 @@ Perfect for Postman, Jest, or other API testing tools.
 from ikidatagen import IkiDataGenerator
 import json
 
-print("🔌 Generating mock API response data...")
+print("Generating mock API response data...")
 
-# User API Response
 user_api_schema = [
     {
         "key_label": "row_number",
@@ -103,5 +102,5 @@ print("[OK] Generating error responses...")
 IkiDataGenerator(error_schema).many(50).export("api_errors", formats=["json"])
 
 print("\n[OK] Mock API responses generated!")
-print("   💡 Use these in Postman or your API testing suite")
-print("   💡 Perfect for frontend development without backend!")
+print("   Use these in Postman or your API testing suite")
+print("   Perfect for frontend development without backend!")

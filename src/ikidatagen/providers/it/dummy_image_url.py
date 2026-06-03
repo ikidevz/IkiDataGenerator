@@ -1,4 +1,3 @@
-import random
 from ..base_provider import BaseProvider
 
 
@@ -12,7 +11,8 @@ class DummyImageUrlProvider(BaseProvider):
         max_h: int = 1000,
         **kwargs
     ):
-        super().__init__(blank_percentage=blank_percentage, ** kwargs)
+        super().__init__(blank_percentage=blank_percentage,
+                         datasets=['colors'], **kwargs)
         self.min_w = min_w
         self.min_h = min_h
         self.max_w = max_w
@@ -20,7 +20,7 @@ class DummyImageUrlProvider(BaseProvider):
         self.bg_colors = self.get_row_data_from_datasets('colors', 'Hex')
 
     def generate_non_blank(self, row_data=None):
-        w = random.randint(self.min_w, self.max_w)
-        h = random.randint(self.min_h, self.max_h)
+        w = self.generate_integer(self.min_w, self.max_w)
+        h = self.generate_integer(self.min_h, self.max_h)
         text_color = self.get_random_data_by_list(['ffffff', '000000'])
         return f"http://dummyimage.com/{w}x{h}.png/{self.bg_colors.replace('#', '')}/{text_color}"

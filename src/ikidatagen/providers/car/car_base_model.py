@@ -11,7 +11,7 @@ class CarBaseModelProvider(BaseProvider):
         if self.lookup is None:
             self.lookup = self.get_dataset_lookup('cars', 'Model')
 
-        car_model = row_data.get('car_model') if row_data else None
+        car_model = row_data.get('Model') if row_data else None
 
         return (
             self.lookup.get(car_model, {}).get('baseModel')

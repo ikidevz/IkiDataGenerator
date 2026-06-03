@@ -9,6 +9,6 @@ class NumberProvider(BaseProvider):
         self.decimals = decimals
 
     def generate_non_blank(self, row_data=None):
-        amount = self.generate_number(self.min, self.max)
+        amount = self.generate_float(self.min, self.max)
         value = round(amount, self.decimals)
         return int(value) if self.decimals == 0 else float(value)

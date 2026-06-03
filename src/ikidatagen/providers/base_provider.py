@@ -141,5 +141,8 @@ class BaseProvider(ABC):
     def get_random_data_by_list(self, d: list | tuple):
         return random.choice(d)
 
+    def get_random_choices_by_list(self, d: list | tuple, k: int = 1):
+        return random.choices(d, k=k)
+
     def get_random_object(self):
         return random.random()

@@ -10,11 +10,15 @@ schema = [
     "row_number",
     "username",
     {
-        "key_label": "crypto_currency",
+        "key_label": "cryptocurrency_symbol",
         "label": "Cryptocurrency",
     },
     {
-        "key_label": "crypto_address",
+        "key_label": "cryptocurrency_name",
+        "label": "Cryptocurrency Name",
+    },
+    {
+        "key_label": "cryptocurrency_address",
         "label": "Wallet Address",
     },
     {
@@ -31,12 +35,8 @@ schema = [
         "label": "Purchase Date",
     },
     {
-        "key_label": "crypto_transaction_id",
+        "key_label": "uuid_v4",
         "label": "Last TX ID",
-    },
-    {
-        "key_label": "blockchain_type",
-        "label": "Blockchain",
     },
     {
         "key_label": "custom_list",

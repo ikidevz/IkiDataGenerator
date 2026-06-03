@@ -7,7 +7,7 @@ Great for complex real-world datasets with diverse attributes.
 
 from ikidatagen import IkiDataGenerator
 
-print("🎨 Generating dataset with mixed categories...")
+print("Generating dataset with mixed categories...")
 
 schema = [
     # Basic identifiers
@@ -20,7 +20,7 @@ schema = [
     "email_address",
     "phone",
     {
-        "key_label": "date_of_birth",
+        "key_label": "datetime",
         "label": "DOB",
     },
 

@@ -3,7 +3,7 @@ from ..base_provider import BaseProvider
 
 
 class GeometricDistributionProvider(BaseProvider):
-    def __init__(self, blank_percentage: float = 0.0, probability: float = 0.5, ** kwargs):
+    def __init__(self, blank_percentage: float = 0.0, probability: float = 0.5, **kwargs):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
         self.p = probability
 

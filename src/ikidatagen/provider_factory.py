@@ -44,7 +44,7 @@ class ProviderFactory:
         """
         resolved_group = ProviderFactory.resolve_group(key_label, group)
 
-        module_path = f"synthetic_data_crafter.providers.{resolved_group}.{key_label.lower()}"
+        module_path = f"{__package__}.providers.{resolved_group}.{key_label.lower()}"
         class_name = "".join(word.capitalize()
                              for word in key_label.split("_")) + "Provider"
         cache_key = (resolved_group, key_label)

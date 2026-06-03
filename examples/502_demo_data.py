@@ -73,7 +73,10 @@ ecommerce_schema = [
 performance_schema = [
     "first_name",
     "last_name",
-    "department",
+    {
+        "key_label": "department_retail",
+        "label": "Department",
+    },
     {
         "key_label": "job_title",
         "label": "Position",

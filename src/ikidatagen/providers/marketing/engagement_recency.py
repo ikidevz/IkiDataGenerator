@@ -1,5 +1,5 @@
 from ..base_provider import BaseProvider
-from providers.basic.duration import DurationProvider
+from ..basic.duration import DurationProvider
 
 
 class EngagementRecencyProvider(BaseProvider):

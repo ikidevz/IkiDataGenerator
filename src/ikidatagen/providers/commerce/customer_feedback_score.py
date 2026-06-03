@@ -6,4 +6,4 @@ class CustomerFeedbackScoreProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        return int(self.generate_number(min=1, max=10))
+        return int(self.generate_float(min=1, max=10))

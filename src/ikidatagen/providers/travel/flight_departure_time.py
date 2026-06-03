@@ -1,5 +1,5 @@
 from ..base_provider import BaseProvider
-from providers.basic.time import TimeProvider
+from ..basic.time import TimeProvider
 
 
 class FlightDepartureTimeProvider(BaseProvider):

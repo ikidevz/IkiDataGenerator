@@ -7,7 +7,7 @@ Great for testing pipelines that process multiple data sources.
 
 from ikidatagen import IkiDataGenerator
 
-print("🔄 Generating multiple datasets in batch...")
+print("Generating multiple datasets in batch...")
 
 # Dataset 1: Users
 print("[OK] Generating 500 users...")

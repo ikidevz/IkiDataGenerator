@@ -98,7 +98,7 @@ review_schema = [
     },
 ]
 
-print("🛍️ Generating E-Commerce Platform Data...")
+print("Generating E-Commerce Platform Data...")
 print("   [OK] Generating 500 customers...")
 IkiDataGenerator(customer_schema).many(500).export(
     "ecommerce_customers", formats=["csv"])

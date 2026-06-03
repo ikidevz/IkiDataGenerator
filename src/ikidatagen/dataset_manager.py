@@ -18,7 +18,7 @@ class DatasetManager:
 
     @classmethod
     def _get_base_path(cls) -> Path:
-        with pkg_resources.path("synthetic_data_crafter", "external_datasets") as p:
+        with pkg_resources.path(__package__, "external_datasets") as p:
             return p
 
     @classmethod

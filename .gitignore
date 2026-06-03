@@ -1,5 +1,4 @@
 __pycache__/
-output/
 docs/
 dist/
 src/iki_data_generator.egg-info/
@@ -11,3 +10,5 @@ setup.cfg
 features.txt
 test.py
 ARTICLE.MD
+output/*
+structure.py

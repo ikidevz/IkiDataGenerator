@@ -6,4 +6,4 @@ class WavelengthProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        return f"{int(self.generate_number(0, 1000))}nm"
+        return f"{int(self.generate_float(0, 1000))}nm"

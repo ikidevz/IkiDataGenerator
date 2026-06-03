@@ -8,7 +8,7 @@ from ikidatagen import IkiDataGenerator
 import json
 
 # Example 1: User Fixtures for Authentication Tests
-print("🧪 Generating test data fixtures...")
+print("Generating test data fixtures...")
 
 user_fixture_schema = [
     {
@@ -86,4 +86,4 @@ IkiDataGenerator(order_fixture_schema).many(
 
 print("\n[OK] Test fixtures generated!")
 print("   [FOLDER] Use these in your pytest or unittest tests")
-print("   💡 Tip: Load from JSON and use as test data in conftest.py")
+print("   Tip: Load from JSON and use as test data in conftest.py")

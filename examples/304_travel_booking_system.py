@@ -6,21 +6,21 @@ Complete travel platform with flights, hotels, bookings, and reviews.
 
 from ikidatagen import IkiDataGenerator
 
-print("✈️ Generating travel booking system data...")
+print("Generating travel booking system data...")
 
 # Airlines & Flights
 flight_schema = [
     "row_number",
     {
-        "key_label": "airline_name",
+        "key_label": "flight_airline_name",
         "label": "Airline",
     },
     {
-        "key_label": "airport_code",
+        "key_label": "flight_departure_airport",
         "label": "Departure Airport",
     },
     {
-        "key_label": "airport_code",
+        "key_label": "flight_arrival_airport",
         "label": "Arrival Airport",
     },
     {
@@ -49,8 +49,14 @@ hotel_schema = [
         "key_label": "hotel_name",
         "label": "Hotel",
     },
-    "city",
-    "country",
+    {
+        "key_label": "hotel_city",
+        "label": "City",
+    },
+    {
+        "key_label": "hotel_country",
+        "label": "Country",
+    },
     {
         "key_label": "number",
         "label": "Stars",

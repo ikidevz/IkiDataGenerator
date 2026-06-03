@@ -14,7 +14,10 @@ schema = [
         "key_label": "email_address",
         "label": "Email",
     },
-    "company",
+    {
+        "key_label": "company_name",
+        "label": "company",
+    },
     {
         "key_label": "custom_list",
         "label": "Subscription Plan",

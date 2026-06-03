@@ -121,7 +121,7 @@ grade_schema = [
 schedule_schema = [
     "row_number",
     {
-        "key_label": "course_name",
+        "key_label": "degree",
         "label": "Course",
     },
     {

@@ -16,7 +16,7 @@ movie_schema = [
         "label": "Title",
     },
     {
-        "key_label": "movie_genre",
+        "key_label": "movie_genres",
         "label": "Genre",
     },
     {
@@ -49,11 +49,11 @@ book_schema = [
         "label": "Title",
     },
     {
-        "key_label": "author_name",
+        "key_label": "book_author",
         "label": "Author",
     },
     {
-        "key_label": "isbn",
+        "key_label": "book_isbn",
         "label": "ISBN",
     },
     {
@@ -73,36 +73,6 @@ book_schema = [
     },
 ]
 
-# Music
-music_schema = [
-    "row_number",
-    {
-        "key_label": "song_title",
-        "label": "Song",
-    },
-    {
-        "key_label": "artist_name",
-        "label": "Artist",
-    },
-    {
-        "key_label": "album_name",
-        "label": "Album",
-    },
-    {
-        "key_label": "music_genre",
-        "label": "Genre",
-    },
-    {
-        "key_label": "number",
-        "label": "Year",
-        "options": {"min": 1960, "max": 2024}
-    },
-    {
-        "key_label": "number",
-        "label": "Duration (seconds)",
-        "options": {"min": 120, "max": 600}
-    },
-]
 
 print("[OK] Generating 500 movies...")
 IkiDataGenerator(movie_schema).many(500).export(
@@ -112,8 +82,5 @@ print("[OK] Generating 1000 books...")
 IkiDataGenerator(book_schema).many(1000).export(
     "entertainment_books", formats=["csv", "json"])
 
-print("[OK] Generating 2000 songs...")
-IkiDataGenerator(music_schema).many(2000).export(
-    "entertainment_music", formats=["csv", "json"])
 
 print("\n[OK] Entertainment data generated!")

@@ -151,6 +151,7 @@ PAYLOAD = {
         "asset_type": DatasetManager.load_key('finance', 'asset_type'),
         "expense_category": DatasetManager.load_key('finance', 'expense_category'),
         "grant_type": DatasetManager.load_key('finance', 'grant_type'),
+        "insurance_provider": DatasetManager.load_key('finance', 'insurance_provider'),
         "insurance_type": DatasetManager.load_key('finance', 'insurance_type'),
         "investment_strategy": DatasetManager.load_key('finance', 'investment_strategy'),
         "payment_term": DatasetManager.load_key('finance', 'payment_term'),
@@ -308,6 +309,7 @@ PAYLOAD = {
         "feature_usage_event":  DatasetManager.load_key('it', 'feature_usage_event'),
         "subscription_renewal_status": DatasetManager.load_key('it', 'subscription_renewal_status'),
         "engagement_level": DatasetManager.load_key('it', 'engagement_level'),
+
     },
     'legal': {
         'crime': DatasetManager.load_key('legal', 'crime'),

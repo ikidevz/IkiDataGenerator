@@ -11,16 +11,12 @@ schema = [
     "username",
     "email_address",
     {
-        "key_label": "character_name",
+        "key_label": "first_name",
         "label": "Character Name",
     },
     {
-        "key_label": "character_class",
+        "key_label": "dream_job",
         "label": "Class",
-    },
-    {
-        "key_label": "character_race",
-        "label": "Race",
     },
     {
         "key_label": "guild_name",

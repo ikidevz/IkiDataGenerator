@@ -23,7 +23,7 @@ schema = [
         "label": "Driver License",
     },
     {
-        "key_label": "uuid",
+        "key_label": "uuid_v4",
         "label": "UUID",
     },
     {

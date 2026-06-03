@@ -97,7 +97,7 @@ medical_schema = [
         "label": "ICD-10",
     },
     {
-        "key_label": "medication_name",
+        "key_label": "drug_name_generic",
         "label": "Medication",
     },
     {
@@ -116,7 +116,7 @@ billing_schema = [
         "label": "Amount",
     },
     {
-        "key_label": "insurance_provider",
+        "key_label": "insurance_type",
         "label": "Insurance",
     },
     {

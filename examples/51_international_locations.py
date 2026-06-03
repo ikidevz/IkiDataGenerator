@@ -30,7 +30,7 @@ schema = [
         "label": "Longitude",
     },
     {
-        "key_label": "timezone",
+        "key_label": "time_zone",
         "label": "Timezone",
     },
     {

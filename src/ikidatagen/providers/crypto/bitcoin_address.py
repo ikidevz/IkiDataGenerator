@@ -4,7 +4,7 @@ from ..base_provider import BaseProvider
 
 
 class BitcoinAddressProvider(BaseProvider):
-    def __init__(self, blank_percentage: float = 0.0, ** kwargs):
+    def __init__(self, blank_percentage: float = 0.0, **kwargs):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
         self.base58_chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
         self.address_prefixes = ["1", "3", "bc1"]

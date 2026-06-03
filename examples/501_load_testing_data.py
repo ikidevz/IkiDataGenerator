@@ -6,7 +6,7 @@ Generate large datasets for load testing, performance testing, and benchmarking.
 
 from ikidatagen import IkiDataGenerator
 
-print("⚡ Generating data for load testing...")
+print("Generating data for load testing...")
 
 # High-volume event stream
 event_schema = [
@@ -73,7 +73,7 @@ IkiDataGenerator(api_schema).many(50000).export(
 )
 
 print("\n[OK] Load test data generated!")
-print("   💡 Perfect for:")
+print("   Perfect for:")
 print("      - JMeter load testing")
 print("      - K6 performance testing")
 print("      - Apache Bench (ab) testing")
