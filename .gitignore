@@ -2,7 +2,7 @@ __pycache__/
 output/
 docs/
 dist/
-synthetic_data_crafter.egg-info/
+src/iki_data_generator.egg-info/
 bin/
 .pypirc
 MANIFEST.in
@@ -10,3 +10,4 @@ pyproject.toml
 setup.cfg
 features.txt
 test.py
+ARTICLE.MD
