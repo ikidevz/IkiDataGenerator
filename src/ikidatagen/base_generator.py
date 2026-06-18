@@ -138,7 +138,10 @@ class BaseGenerator:
             key_label = col["key_label"]
             group = col["group"]
             options = dict(col["options"])
-            options["schema_labels"] = schema_labels
+            class_name = "".join(word.capitalize()
+                                 for word in key_label.split("_")) + "Provider"
+            if class_name in _LABEL_KEYED_PROVIDERS:
+                options["schema_labels"] = schema_labels
 
             provider_instance = ProviderFactory.create(
                 key_label=key_label,
