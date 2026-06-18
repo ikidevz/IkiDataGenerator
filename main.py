@@ -36,6 +36,12 @@ schema = [
         "key_label": "template",
         "options": {"template": "{{First Name}} {{Last Name}} - {{Email Address}}"}
     },
+
+    {
+        "label": "temp_ip_address",
+        "key_label": "template",
+        "options": {"template": "{{id}} {{IP Address}}"}
+    },
     {
         "label": "created_at",
         "key_label": "current_timestamp",

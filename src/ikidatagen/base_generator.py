@@ -6,9 +6,6 @@ from typing import Any
 from .provider_factory import ProviderFactory
 
 
-_LABEL_KEYED_PROVIDERS = {"TemplateProvider", "LambdaProvider"}
-
-
 def _normalize_entry(entry: str | dict[str, Any]) -> dict[str, Any]:
     """
     Accept the two supported schema entry shapes and return a canonical dict.
@@ -116,7 +113,7 @@ class BaseGenerator:
             options = dict(col["options"])
             class_name = "".join(word.capitalize()
                                  for word in key_label.split("_")) + "Provider"
-            if class_name in _LABEL_KEYED_PROVIDERS:
+            if class_name == "TemplateProvider":
                 options["schema_labels"] = schema_labels
 
             provider_instance = ProviderFactory.create(
