@@ -84,14 +84,10 @@ class BaseGenerator:
 
     def generate_many(self, n: int) -> list[dict]:
         """Generate n records.  Returns a list of dicts keyed by output label."""
-        # internal_rows  → keyed by label  (used by TemplateProvider / LambdaProvider)
-        # output_rows    → keyed by key_label  (used by everything else + final output)
-        internal_rows = [{} for _ in range(n)]
-        output_rows = [{} for _ in range(n)]
+        rows = [{} for _ in range(n)]
 
         for col_key, data in self.providers.items():
             label = data["label"]
-            key_label = data["key_label"]
             provider = data["provider"]
 
             pct = (getattr(provider, "blank_percentage", 0.0) or 0.0) / 100
@@ -99,35 +95,15 @@ class BaseGenerator:
             blank_set = set(random.sample(range(n), num_blanks)
                             ) if num_blanks > 0 else set()
 
-            is_label_keyed = provider.__class__.__name__ in _LABEL_KEYED_PROVIDERS
-
             for i in range(n):
                 if i in blank_set:
-                    internal_rows[i][label] = None
-                    output_rows[i][key_label] = None
+                    rows[i][label] = None
                     continue
 
-                row_context = internal_rows[i] if is_label_keyed else output_rows[i]
-                value = provider.generate_non_blank(row_data=row_context)
+                value = provider.generate_non_blank(row_data=rows[i])
+                rows[i][label] = value
 
-                internal_rows[i][label] = value
-                output_rows[i][key_label] = value
-
-        # Return output_rows but replace key_label keys with the user-defined
-        # label when label differs from key_label (i.e. the user renamed a column).
-        final_rows = []
-        for i in range(n):
-            row: dict[str, Any] = {}
-            for col_key, data in self.providers.items():
-                label = data["label"]
-                key_label = data["key_label"]
-                value = output_rows[i].get(key_label)
-                # Use label as the output column name so renamed columns
-                # appear with the user-chosen name in CSV/JSON/SQL exports.
-                row[label] = value
-            final_rows.append(row)
-
-        return final_rows
+        return rows
 
     def _initialize_providers(self) -> dict:
         providers: dict[str, dict] = {}
