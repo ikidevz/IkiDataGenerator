@@ -1,5 +1,5 @@
 from ..base_provider import BaseProvider
-from synthetic_data_crafter.providers.location.street_name import StreetNameProvider
+from ..location.street_name import StreetNameProvider
 
 
 class StreetAddressProvider(BaseProvider):
