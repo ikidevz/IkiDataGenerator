@@ -7,4 +7,3 @@ pyarrow==22.0.0
 python_bcrypt==0.3.2
 python_dateutil==2.9.0.post0
 rstr==3.2.2
-synthetic_data_crafter==1.1.5
