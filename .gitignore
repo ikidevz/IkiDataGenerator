@@ -5,11 +5,9 @@ src/iki_data_generator.egg-info/
 bin/
 .pypirc
 MANIFEST.in
-pyproject.toml
 setup.cfg
 features.txt
 test.py
 ARTICLE.md
 output/*
 structure.py
-.pypirc

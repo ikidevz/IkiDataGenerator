@@ -71,6 +71,9 @@ class BaseProvider(ABC):
     def generate_non_blank(self, row_data: dict | None = None):
         raise NotImplementedError
 
+    def generate(self, row_data: dict | None = None):
+        return self.generate_non_blank(row_data=row_data)
+
     def import_datasets(self) -> dict:
         return {name: DatasetManager.load(name) for name in self.datasets}
 

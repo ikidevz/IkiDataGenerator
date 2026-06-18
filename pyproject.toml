@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=74.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iki-data-generator"
+version = "0.1.6"
+description = "A synthetic data generation library with 700+ built-in data fields across 22 categories."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "ikidevz" }]
+keywords = ["synthetic", "data", "generator", "faker", "testing", "mock"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "duckdb>=1.5.4",
+    "lorem_text>=3.0",
+    "numpy>=2.4.0", 
+    "openpyxl>=3.1.5",
+    "pandas>=3.0.0", 
+    "pyarrow>=22.0.0", 
+    "python_bcrypt>=0.3.2",
+    "python-dateutil>=2.9.0",
+    "rstr>=3.2.2"
+]
+
+[project.urls]
+Homepage = "https://github.com/ikidevz/IkiDataGenerator"
+Repository = "https://github.com/ikidevz/IkiDataGenerator"
+Issues = "https://github.com/ikidevz/IkiDataGenerator/issues"
+Documentation = "https://github.com/ikidevz/IkiDataGenerator#readme"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"ikidatagen" = [
+    "external_datasets/**/*.json",
+    "external_datasets/**/*.csv",
+]
