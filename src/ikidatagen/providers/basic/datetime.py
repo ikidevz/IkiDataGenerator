@@ -8,16 +8,29 @@ class DatetimeProvider(BaseProvider):
 
     def __init__(
         self,
-        from_date: str = "01/01/1970",
+        from_date: str = None,
         to_date: str = None,
         date_format: str = "mm/dd/yyyy",
+        minimum_age: int = None,
+        maximum_age: int = None,
         blank_percentage: float = 0.0,
         **kwargs
     ):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
+        today = datetime.date.today()
+
+        if minimum_age is not None and maximum_age is not None:
+            to_date = (
+                today - datetime.timedelta(days=minimum_age * 365)).strftime("%m/%d/%Y")
+            from_date = (
+                today - datetime.timedelta(days=maximum_age * 365)).strftime("%m/%d/%Y")
+
         if to_date is None:
-            to_date = datetime.date.today().strftime("%m/%d/%Y")
+            to_date = today.strftime("%m/%d/%Y")
+        if from_date is None:
+            from_date = "01/01/1970"
+
         self.from_date = self._parse_date(from_date)
         self.to_date = self._parse_date(to_date)
         self.format = date_format
@@ -44,23 +57,24 @@ class DatetimeProvider(BaseProvider):
         epoch_seconds = self._safe_epoch_seconds(dt)
 
         format_map = {
-            "m/d/yyyy": dt.strftime(f"{m}/{d}/%Y"),
-            "mm/dd/yyyy": dt.strftime("%m/%d/%Y"),
-            "yyyy-mm-dd": dt.strftime("%Y-%m-%d"),
-            "yyyy-mm": dt.strftime("%Y-%m"),
-            "d/m/yyyy": dt.strftime(f"{d}/{m}/%Y"),
-            "dd/mm/yyyy": dt.strftime("%d/%m/%Y"),
-            "d.m.yyyy": dt.strftime(f"{d}.{m}.%Y"),
-            "dd.mm.yyyy": dt.strftime("%d.%m.%Y"),
-            "dd-mm-yyyy": dt.strftime("%d-%m-%Y"),
-            "dd-Mon-yyyy": dt.strftime("%d-%b-%Y"),
-            "yyyy/mm/dd": dt.strftime("%Y/%m/%d"),
-            "SQL datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),
+            "m/d/yyyy":       dt.strftime(f"{m}/{d}/%Y"),
+            "mm/dd/yyyy":     dt.strftime("%m/%d/%Y"),
+            "yyyy-mm-dd":     dt.strftime("%Y-%m-%d"),
+            "yyyy-mm":        dt.strftime("%Y-%m"),
+            "d/m/yyyy":       dt.strftime(f"{d}/{m}/%Y"),
+            "dd/mm/yyyy":     dt.strftime("%d/%m/%Y"),
+            "d.m.yyyy":       dt.strftime(f"{d}.{m}.%Y"),
+            "dd.mm.yyyy":     dt.strftime("%d.%m.%Y"),
+            "dd-mm-yyyy":     dt.strftime("%d-%m-%Y"),
+            "dd-Mon-yyyy":    dt.strftime("%d-%b-%Y"),
+            "yyyy/mm/dd":     dt.strftime("%Y/%m/%d"),
+            "SQL datetime":   dt.strftime("%Y-%m-%d %H:%M:%S"),
             "ISO 8601 (UTC)": dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "epoch": str(epoch_seconds),
+            "epoch":          str(epoch_seconds),
             "unix timestamp": str(epoch_seconds),
-            "mongoDB epoch": str(epoch_seconds * 1000),
-            "mongoDB ISO": dt.isoformat() + "Z",
+            "mongoDB epoch":  str(epoch_seconds * 1000),
+            "mongoDB ISO":    dt.isoformat() + "Z",
+            "iso": dt.isoformat()
         }
 
         return format_map.get(self.format, dt.isoformat())
