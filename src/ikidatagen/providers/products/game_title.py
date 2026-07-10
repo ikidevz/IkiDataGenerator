@@ -7,4 +7,4 @@ class GameTitleProvider(BaseProvider):
                          datasets=['video_games'], **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        self.get_row_data_from_datasets('video_games', 'Name')
+        return self.get_row_data_from_datasets('video_games', 'Name')

@@ -1,4 +1,3 @@
-import random
 from datetime import datetime, timedelta
 from ..base_provider import BaseProvider
 
@@ -16,7 +15,7 @@ class TimeProvider(BaseProvider):
         t2 = datetime.strptime(self.time_to, fmt_base)
 
         delta = (t2 - t1).seconds
-        random_seconds = random.randint(0, delta)
+        random_seconds = self.generate_integer(0, delta)
         random_time = (t1 + timedelta(seconds=random_seconds))
 
         if self.fmt == "24 Hour":

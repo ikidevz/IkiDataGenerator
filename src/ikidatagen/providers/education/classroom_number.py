@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 import string
 
 
@@ -10,15 +9,15 @@ class ClassroomNumberProvider(BaseProvider):
 
     def generate_non_blank(self, row_data=None):
         formats = {
-            "Room": f"Room {random.randint(1, 999)}",
-            "Lab": f"Lab {random.randint(1, 50)}{random.choice(string.ascii_uppercase)}",
-            "Lecture": f"Lecture Hall {random.choice(string.ascii_uppercase)}",
+            "Room": f"Room {self.generate_integer(1, 999)}",
+            "Lab": f"Lab {self.generate_integer(1, 50)}{self.get_random_data_by_list(string.ascii_uppercase)}",
+            "Lecture": f"Lecture Hall {self.get_random_data_by_list(string.ascii_uppercase)}",
         }
 
         if self.format == "Auto":
-            return random.choice(list(formats.values()))
+            return self.get_random_data_by_list(list(formats.values()))
 
         if self.format in formats:
             return formats[self.format]
 
-        return f"Room {random.randint(1, 999)}"
+        return f"Room {self.generate_integer(1, 999)}"

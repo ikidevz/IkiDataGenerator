@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class VoterTurnoutProvider(BaseProvider):
@@ -7,4 +6,4 @@ class VoterTurnoutProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        return f"{random.randint(0, 99)}%"
+        return f"{self.generate_integer(0, 99)}%"

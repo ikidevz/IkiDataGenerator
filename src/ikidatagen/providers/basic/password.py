@@ -1,4 +1,3 @@
-import random
 import string
 from ..base_provider import BaseProvider
 
@@ -13,17 +12,21 @@ class PasswordProvider(BaseProvider):
         self.symbols_num = symbols_num
 
     def generate_non_blank(self, row_data=None):
-        upper_chars = random.choices(string.ascii_uppercase, k=self.upper_num)
-        lower_chars = random.choices(string.ascii_lowercase, k=self.lower_num)
-        number_chars = random.choices(string.digits, k=self.numbers_num)
-        symbol_chars = random.choices(
-            "!@#$%^&*()-_=+[]{};:,.<>?", k=self.symbols_num)
+        upper_chars = self.get_random_choices_by_list(
+            string.ascii_uppercase, self.upper_num)
+        lower_chars = self.get_random_choices_by_list(
+            string.ascii_lowercase, self.lower_num)
+        number_chars = self.get_random_choices_by_list(
+            string.digits, self.numbers_num)
+        symbol_chars = self.get_random_choices_by_list(
+            "!@#$%^&*()-_=+[]{};:,.<>?", self.symbols_num)
 
         password_chars = upper_chars + lower_chars + number_chars + symbol_chars
         remaining_length = max(0, self.min_length - len(password_chars))
         if remaining_length > 0:
             all_chars = string.ascii_letters + string.digits + "!@#$%^&*()-_=+[]{};:,.<>?"
-            password_chars += random.choices(all_chars, k=remaining_length)
+            password_chars += self.get_random_choices_by_list(
+                all_chars, remaining_length)
 
-        random.shuffle(password_chars)
+        self.shuffle_list(password_chars)
         return "".join(password_chars)

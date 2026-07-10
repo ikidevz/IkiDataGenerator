@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class ImeiNumberProvider(BaseProvider):
@@ -21,8 +20,8 @@ class ImeiNumberProvider(BaseProvider):
         return str(check)
 
     def generate_non_blank(self, row_data=None):
-        tac = f"{random.randint(0, 99999999):08d}"
-        snr = f"{random.randint(0, 999999):06d}"
+        tac = f"{self.generate_integer(0, 99999999):08d}"
+        snr = f"{self.generate_integer(0, 999999):06d}"
         body14 = tac + snr  # 14 digits
         check_digit = self._luhn_check_digit(body14)
         imei = body14 + check_digit

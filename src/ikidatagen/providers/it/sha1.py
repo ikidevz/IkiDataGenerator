@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 import hashlib
 import string
 
@@ -10,7 +9,7 @@ class Sha1Provider(BaseProvider):
         self.length = length
 
     def generate_non_blank(self, row_data=None):
-        random_str = ''.join(random.choices(
+        random_str = ''.join(self.get_random_choices_by_list(
             string.ascii_letters + string.digits, k=self.length))
         hashed = hashlib.sha1(random_str.encode('utf-8')).hexdigest()
         return hashed

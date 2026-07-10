@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class MedicalDeviceIdProvider(BaseProvider):
@@ -8,6 +7,6 @@ class MedicalDeviceIdProvider(BaseProvider):
 
     def generate_non_blank(self, row_data=None):
         prefixes = ["MD", "EQ", "ME", "DEV", "ICU", "SURG", "LAB"]
-        prefix = random.choice(prefixes)
-        number = random.randint(10000, 99999)
+        prefix = self.get_random_data_by_list(prefixes)
+        number = self.generate_integer(10000, 99999)
         return f"{prefix}-{number}"

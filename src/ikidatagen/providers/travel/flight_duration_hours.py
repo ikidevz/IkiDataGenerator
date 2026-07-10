@@ -1,4 +1,3 @@
-import random
 from ..base_provider import BaseProvider
 
 
@@ -8,4 +7,4 @@ class FlightDurationHoursProvider(BaseProvider):
                          datasets=['countries'], **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        return random.uniform(10.5, 25.75)
+        return self.generate_float(10.5, 25.75)

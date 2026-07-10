@@ -17,7 +17,7 @@ SCHEMA = [
 
 def main():
     gen = IkiDataGenerator(SCHEMA)
-    rows = gen.many(5)
+    rows = gen.many(5).data
     print("Generated rows:")
     for r in rows:
         print(r)

@@ -1,4 +1,3 @@
-import random
 from lorem_text import lorem
 from ..base_provider import BaseProvider
 
@@ -10,7 +9,8 @@ class SentencesProvider(BaseProvider):
         self.max_sentence = max_sentence
 
     def generate_non_blank(self, row_data=None):
-        num_sentences = random.randint(self.min_sentence, self.max_sentence)
+        num_sentences = self.generate_integer(
+            self.min_sentence, self.max_sentence)
         sentences = [lorem.sentence() for _ in range(num_sentences)]
         text = " ".join(sentences)
         return f'"{text}"'

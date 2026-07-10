@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class AverageOrderValueProvider(BaseProvider):
@@ -7,4 +6,4 @@ class AverageOrderValueProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        return f"${round(random.uniform(10, 10000), 2)}"
+        return f"${round(self.generate_float(10, 10000), 2)}"

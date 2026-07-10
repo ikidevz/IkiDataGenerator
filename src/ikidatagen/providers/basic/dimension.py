@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class DimensionProvider(BaseProvider):
@@ -9,11 +8,11 @@ class DimensionProvider(BaseProvider):
 
     def generate_non_blank(self, row_data=None):
         if self.type == "2D":
-            width = round(random.uniform(1, 5000), 1)
-            height = round(random.uniform(1, 5000), 1)
+            width = round(self.generate_float(1, 5000), 1)
+            height = round(self.generate_float(1, 5000), 1)
             return f"{width}x{height}"
         else:
-            width = round(random.uniform(1, 500), 1)
-            height = round(random.uniform(1, 500), 1)
-            depth = round(random.uniform(1, 500), 1)
+            width = round(self.generate_float(1, 500), 1)
+            height = round(self.generate_float(1, 500), 1)
+            depth = round(self.generate_float(1, 500), 1)
             return f"{width}x{height}x{depth}"

@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class CustomerLifetimeValueProvider(BaseProvider):
@@ -9,5 +8,5 @@ class CustomerLifetimeValueProvider(BaseProvider):
         self.max = max
 
     def generate_non_blank(self, row_data=None):
-        value = random.randint(self.min, self.max)
+        value = self.generate_integer(self.min, self.max)
         return f"${value:,}"

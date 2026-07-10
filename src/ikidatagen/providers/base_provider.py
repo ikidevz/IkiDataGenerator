@@ -149,3 +149,12 @@ class BaseProvider(ABC):
 
     def get_random_object(self):
         return random.random()
+
+    def get_random_sample(self, population: list | tuple, k: int = 1):
+        """Get random sample of k unique items from population."""
+        return random.sample(population, k=k)
+
+    def shuffle_list(self, d: list):
+        """Shuffle a list in-place."""
+        random.shuffle(d)
+        return d

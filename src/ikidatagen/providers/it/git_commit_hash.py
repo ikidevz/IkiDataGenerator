@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class GitCommitHashProvider(BaseProvider):
@@ -9,4 +8,4 @@ class GitCommitHashProvider(BaseProvider):
 
     def generate_non_blank(self, row_data=None):
         length = 7 if self.short else 40
-        return ''.join(random.choices('0123456789abcdef', k=length))
+        return ''.join(self.get_random_choices_by_list('0123456789abcdef', k=length))

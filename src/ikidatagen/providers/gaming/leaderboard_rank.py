@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class LeaderboardRankProvider(BaseProvider):
@@ -8,4 +7,4 @@ class LeaderboardRankProvider(BaseProvider):
         self.len = len
 
     def generate_non_blank(self, row_data=None):
-        return random.randint(1, self.len)
+        return self.generate_integer(1, self.len)

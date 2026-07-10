@@ -1,4 +1,3 @@
-import random
 import string
 from ..base_provider import BaseProvider
 
@@ -34,7 +33,7 @@ class IbanProvider(BaseProvider):
         return f"{check:02d}"
 
     def generate_non_blank(self, row_data=None):
-        g = self.IBAN_GROUPS[self.continent or random.choice(
+        g = self.IBAN_GROUPS[self.continent or self.get_random_data_by_list(
             list(self.IBAN_GROUPS.keys()))]
         cc = g["code"]
         pattern = g["pattern"]
@@ -42,7 +41,7 @@ class IbanProvider(BaseProvider):
         bban_parts = []
         for part, length in pattern.items():
             chars = string.ascii_uppercase if "bank" in part else string.digits
-            bban_parts.append(''.join(random.choices(chars, k=length)))
+            bban_parts.append(''.join(self.get_random_choices_by_list(chars, k=length)))
         bban = ''.join(bban_parts)
 
         check = self._compute_check(cc, bban)

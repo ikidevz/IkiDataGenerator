@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class LatencyProvider(BaseProvider):
@@ -18,4 +17,4 @@ class LatencyProvider(BaseProvider):
             min_latency, max_latency = self.communication['latency_range'].get(
                 network_type)
 
-        return f"{random.randint(min_latency, max_latency)}ms"
+        return f"{self.generate_integer(min_latency, max_latency)}ms"

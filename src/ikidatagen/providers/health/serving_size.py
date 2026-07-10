@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class ServingSizeProvider(BaseProvider):
@@ -7,13 +6,13 @@ class ServingSizeProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        quantity = random.randint(1, 3)
+        quantity = self.generate_integer(1, 3)
         units = [
             "cup", "cups", "tbsp", "tsp", "g", "mg", "slice", "plate", "bowl"
         ]
 
-        unit = random.choice(units)
+        unit = self.get_random_data_by_list(units)
         if unit in ["g", "mg"]:
-            return f"{random.randint(50, 500)}{unit}"
+            return f"{self.generate_integer(50, 500)}{unit}"
 
         return f"{quantity} {unit}"

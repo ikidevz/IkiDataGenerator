@@ -1,4 +1,3 @@
-import random
 from ..base_provider import BaseProvider
 
 
@@ -9,5 +8,5 @@ class FlightNumberProvider(BaseProvider):
 
     def generate_non_blank(self, row_data=None):
         code = self.get_row_data_from_datasets('airlines', 'code')
-        number = random.randint(1, 9999)
+        number = self.generate_integer(1, 9999)
         return f"{code}{number}"

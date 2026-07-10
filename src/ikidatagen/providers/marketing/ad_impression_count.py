@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class AdImpressionCountProvider(BaseProvider):
@@ -15,12 +14,12 @@ class AdImpressionCountProvider(BaseProvider):
             return f"{round(num / 1_000_000, 1)}M"
 
     def generate_non_blank(self, row_data=None):
-        r = random.random()
+        r = self.get_random_object()
         if r < 0.70:
-            num = random.randint(10, 5_000)
+            num = self.generate_integer(10, 5_000)
         elif r < 0.95:
-            num = random.randint(5_000, 500_000)
+            num = self.generate_integer(5_000, 500_000)
         else:
-            num = random.randint(500_000, 10_000_000)
+            num = self.generate_integer(500_000, 10_000_000)
 
         return self._format_number(num)

@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class TemperatureProvider(BaseProvider):
@@ -9,11 +8,11 @@ class TemperatureProvider(BaseProvider):
 
     def generate_non_blank(self, row_data=None):
         if self.type == "fahrenheit":
-            temp = round(random.uniform(-4.0, 113.0), 1)
+            temp = round(self.generate_float(-4.0, 113.0), 1)
             sign = "°F"
         else:
             # default to celsius for any unknown or misspelled types
-            temp = round(random.uniform(-20.0, 45.0), 1)
+            temp = round(self.generate_float(-20.0, 45.0), 1)
             sign = "°C"
 
         return f"{temp}{sign}"

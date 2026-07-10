@@ -1,4 +1,3 @@
-import random
 from ..base_provider import BaseProvider
 
 
@@ -7,4 +6,4 @@ class DiceRollProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        return random.randint(1, 6)
+        return self.generate_integer(1, 6)

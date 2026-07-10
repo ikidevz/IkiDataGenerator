@@ -1,4 +1,3 @@
-import random
 import string
 from ..base_provider import BaseProvider
 
@@ -19,7 +18,7 @@ class NhsNumberProvider(BaseProvider):
         return check_digit
 
     def generate_non_blank(self, row_data=None):
-        digits = [random.randint(0, 9) for _ in range(8)]
+        digits = [self.generate_integer(0, 9) for _ in range(8)]
         for ninth_digit in range(10):  # deterministic check, no infinite loop
             candidate = digits + [ninth_digit]
             check_digit = self._calculate_check_digit(candidate)

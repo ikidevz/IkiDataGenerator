@@ -14,6 +14,21 @@ import re
 _IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 
+def _neutralize_formula(value):
+    if isinstance(value, str) and value.startswith(("=", "+", "-", "@", "\t", "\r")):
+        return "'" + value
+    return value
+
+
+def _safe_xml_name(name: str) -> str:
+    if not isinstance(name, str):
+        name = str(name)
+    safe_name = re.sub(r"\W+", "_", name).strip("_") or "field"
+    if not re.match(r"^[A-Za-z_][A-Za-z0-9_.-]*$", safe_name):
+        safe_name = re.sub(r"[^A-Za-z0-9_.-]", "_", safe_name)
+    return safe_name
+
+
 def _safe_identifier(name: str) -> str:
     if not isinstance(name, str):
         raise ValueError(
@@ -34,7 +49,10 @@ class Exporter:
         with open(file_path, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=data[0].keys())
             writer.writeheader()
-            writer.writerows(data)
+            writer.writerows([
+                {k: _neutralize_formula(v) for k, v in row.items()}
+                for row in data
+            ])
         print(f"CSV saved to: {file_path}")
 
     @staticmethod
@@ -47,7 +65,10 @@ class Exporter:
             writer = csv.DictWriter(
                 f, fieldnames=data[0].keys(), delimiter='\t')
             writer.writeheader()
-            writer.writerows(data)
+            writer.writerows([
+                {k: _neutralize_formula(v) for k, v in row.items()}
+                for row in data
+            ])
         print(f"TSV saved to: {file_path}")
 
     @staticmethod
@@ -181,7 +202,7 @@ class Exporter:
         headers = list(data[0].keys())
         ws.append(headers)
         for row in data:
-            ws.append([row.get(h) for h in headers])
+            ws.append([_neutralize_formula(row.get(h)) for h in headers])
         wb.save(file_path)
         print(f"Excel saved to: {file_path}")
 
@@ -192,11 +213,11 @@ class Exporter:
             raise ValueError("No data to export.")
         Path(file_path).parent.mkdir(parents=True, exist_ok=True)
 
-        root = ET.Element(root_element)
+        root = ET.Element(_safe_xml_name(root_element))
         for row in data:
-            rec = ET.SubElement(root, record_element)
+            rec = ET.SubElement(root, _safe_xml_name(record_element))
             for k, v in row.items():
-                el = ET.SubElement(rec, k)
+                el = ET.SubElement(rec, _safe_xml_name(k))
                 el.text = "" if v is None else str(v)
 
         tree = ET.ElementTree(root)

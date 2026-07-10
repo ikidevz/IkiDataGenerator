@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class InGameCurrencyBalanceProvider(BaseProvider):
@@ -8,4 +7,4 @@ class InGameCurrencyBalanceProvider(BaseProvider):
         self.max = max
 
     def generate_non_blank(self, row_data=None):
-        return random.randint(0, self.max)
+        return self.generate_integer(0, self.max)

@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class MacAddressProvider(BaseProvider):
@@ -7,5 +6,5 @@ class MacAddressProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        mac = [random.randint(0x00, 0xFF) for _ in range(6)]
+        mac = [self.generate_integer(0x00, 0xFF) for _ in range(6)]
         return ':'.join(f'{byte:02X}' for byte in mac)

@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class TaxIdProvider(BaseProvider):
@@ -10,7 +9,7 @@ class TaxIdProvider(BaseProvider):
     def generate_non_blank(self, row_data=None):
         if self.type == "EIN":
             # Format: XX-XXXXXXX
-            return f"{random.randint(10, 99)}-{random.randint(1000000, 9999999)}"
+            return f"{self.generate_integer(10, 99)}-{self.generate_integer(1000000, 9999999)}"
 
         # Default: SSN format XXX-XX-XXXX
-        return f"{random.randint(100, 999)}-{random.randint(10, 99)}-{random.randint(1000, 9999)}"
+        return f"{self.generate_integer(100, 999)}-{self.generate_integer(10, 99)}-{self.generate_integer(1000, 9999)}"

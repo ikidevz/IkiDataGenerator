@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class WindSpeedProvider(BaseProvider):
@@ -9,5 +8,5 @@ class WindSpeedProvider(BaseProvider):
             ["mph", "km/h", "m/s"])
 
     def generate_non_blank(self, row_data=None):
-        speed = round(random.uniform(0, 200), 1)
+        speed = round(self.generate_float(0, 200), 1)
         return f"{speed} {self.unit}"

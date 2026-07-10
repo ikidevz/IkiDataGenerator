@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class NoiseLevelProvider(BaseProvider):
@@ -15,7 +14,7 @@ class NoiseLevelProvider(BaseProvider):
             high = low + 20
         else:
             low = high = int(level_str)
-        return round(random.uniform(low, high), 1)
+        return round(self.generate_float(low, high), 1)
 
     def generate_non_blank(self, row_data=None):
         noise_source = row_data.get('noise_source') if row_data else None
@@ -31,4 +30,4 @@ class NoiseLevelProvider(BaseProvider):
                 'noise', 'Category').get(noise_category).get('Noise_Level_DB')
             return self._parse_level(get_noise_level_DB)
 
-        return round(random.uniform(20, 120), 1)
+        return round(self.generate_float(20, 120), 1)

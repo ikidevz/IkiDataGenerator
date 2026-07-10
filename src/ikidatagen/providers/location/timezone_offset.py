@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class TimezoneOffsetProvider(BaseProvider):
@@ -8,6 +7,17 @@ class TimezoneOffsetProvider(BaseProvider):
         self.prefix = prefix
 
     def generate_non_blank(self, row_data=None):
-        offset = random.randint(-12, 14)
+        time_zone = (row_data or {}).get('time_zone')
+        if isinstance(time_zone, str) and time_zone.strip():
+            normalized = time_zone.strip().lower()
+            if normalized.startswith('utc'):
+                try:
+                    offset = int(normalized.replace('utc', '', 1))
+                    sign = "+" if offset >= 0 else ""
+                    return f"{self.prefix}{sign}{offset}"
+                except ValueError:
+                    pass
+
+        offset = self.generate_integer(-12, 14)
         sign = "+" if offset >= 0 else ""
         return f"{self.prefix}{sign}{offset}"

@@ -104,7 +104,8 @@ class IkiDataGenerator:
                 "No data to export. Call .many(n) before .export()."
             )
 
-        Path(output_dir).mkdir(parents=True, exist_ok=True)
+        resolved_output_dir = Path(output_dir).resolve()
+        resolved_output_dir.mkdir(parents=True, exist_ok=True)
 
         target_formats = formats or ["csv"]
         for fmt in target_formats:
@@ -114,7 +115,11 @@ class IkiDataGenerator:
                 print(f"[Warning] Unknown export format '{fmt}' — skipped.")
                 continue
 
-            base = f"{output_dir}/{table_name}"
+            if Path(table_name).is_absolute() or ".." in Path(table_name).parts or "/" in table_name or "\\" in table_name or Path(table_name).name != table_name:
+                raise ValueError(
+                    "table_name must be a simple file name without path components.")
+
+            base = str(resolved_output_dir / table_name)
 
             match fmt_lower:
                 case "csv":

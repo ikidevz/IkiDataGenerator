@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 import string
 
 
@@ -8,7 +7,7 @@ class JsonWebTokenProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        def random_base64url(length): return ''.join(random.choices(
+        def random_base64url(length): return ''.join(self.get_random_choices_by_list(
             string.ascii_letters + string.digits + "-_", k=length))
         header = random_base64url(8)
         payload = random_base64url(16)

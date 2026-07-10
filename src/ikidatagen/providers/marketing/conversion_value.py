@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class ConversionValueProvider(BaseProvider):
@@ -7,17 +6,17 @@ class ConversionValueProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        style = random.choice(["currency", "credits"])
+        style = self.get_random_data_by_list(["currency", "credits"])
 
         if style == "currency":
-            r = random.random()
+            r = self.get_random_object()
             if r < 0.85:
-                amount = round(random.uniform(1, 500), 2)
+                amount = round(self.generate_float(1, 500), 2)
             else:
-                amount = round(random.uniform(100, 100000), 2)
+                amount = round(self.generate_float(100, 100000), 2)
 
             return f"${amount:,.2f}"
 
         else:
-            credits = random.randint(1, 500)
+            credits = self.generate_integer(1, 500)
             return f"{credits} credits"

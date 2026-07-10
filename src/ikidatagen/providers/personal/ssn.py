@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class SsnProvider(BaseProvider):
@@ -8,11 +7,11 @@ class SsnProvider(BaseProvider):
 
     def generate_non_blank(self, row_data=None):
         while True:
-            area = random.randint(1, 899)
+            area = self.generate_integer(1, 899)
             if area == 666:
                 continue
-            group = random.randint(1, 99)
-            serial = random.randint(1, 9999)
+            group = self.generate_integer(1, 99)
+            serial = self.generate_integer(1, 9999)
 
             ssn = f"{area:03d}-{group:02d}-{serial:04d}"
             return ssn

@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class BrowsingDurationProvider(BaseProvider):
@@ -7,8 +6,8 @@ class BrowsingDurationProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        hours = random.randint(0, 20)
-        minutes = random.choice([0, 15, 30, 45])
+        hours = self.generate_integer(0, 20)
+        minutes = self.get_random_data_by_list([0, 15, 30, 45])
 
         if hours == 0 and minutes > 0:
             return f"{minutes}m"

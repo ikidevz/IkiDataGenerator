@@ -1,4 +1,3 @@
-import random
 
 from ..base_provider import BaseProvider
 
@@ -27,7 +26,7 @@ class DriverLicenseNumberProvider(BaseProvider):
 
     def generate_non_blank(self, row_data=None):
 
-        pattern = self.pattern or random.choice(self.FORMATS)
+        pattern = self.pattern or self.get_random_data_by_list(self.FORMATS)
 
         return "".join(
             self.sublify_char(char)

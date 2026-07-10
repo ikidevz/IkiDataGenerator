@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class ApiVersionProvider(BaseProvider):
@@ -7,9 +6,9 @@ class ApiVersionProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        major = random.randint(1, 10)
-        if random.random() < 0.5:
-            minor = random.randint(0, 9)
+        major = self.generate_integer(1, 10)
+        if self.get_random_object() < 0.5:
+            minor = self.generate_integer(0, 9)
             return f"v{major}.{minor}"
         else:
             return f"v{major}"

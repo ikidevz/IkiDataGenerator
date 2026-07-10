@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class BoardingGateProvider(BaseProvider):
@@ -7,10 +6,10 @@ class BoardingGateProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        if random.choice([True, False]):
-            gate_number = random.randint(1, 60)
+        if self.get_random_data_by_list([True, False]):
+            gate_number = self.generate_integer(1, 60)
             return f"Gate {gate_number}"
         else:
-            letter = random.choice(["A", "B", "C", "D", "E"])
-            number = random.randint(1, 50)
+            letter = self.get_random_data_by_list(["A", "B", "C", "D", "E"])
+            number = self.generate_integer(1, 50)
             return f"{letter}{number}"

@@ -1,5 +1,4 @@
 import time
-import random
 from ..base_provider import BaseProvider
 
 
@@ -10,8 +9,9 @@ class MongodbObjectIdProvider(BaseProvider):
     def generate_non_blank(self, row_data=None):
         timestamp = int(time.time())
         timestamp_hex = f"{timestamp:08x}"
-        machine_pid_hex = ''.join(random.choices("0123456789abcdef", k=10))
-        counter = random.randint(0, 0xFFFFFF)
+        machine_pid_hex = ''.join(
+            self.get_random_choices_by_list("0123456789abcdef", 10))
+        counter = self.generate_integer(0, 0xFFFFFF)
         counter_hex = f"{counter:06x}"
 
         return f"{timestamp_hex}{machine_pid_hex}{counter_hex}"

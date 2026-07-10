@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class VerificationCodeProvider(BaseProvider):
@@ -8,4 +7,4 @@ class VerificationCodeProvider(BaseProvider):
         self.length = length
 
     def generate_non_blank(self, row_data=None):
-        return ''.join(random.choices("0123456789", k=self.length))
+        return ''.join(self.get_random_choices_by_list("0123456789", k=self.length))

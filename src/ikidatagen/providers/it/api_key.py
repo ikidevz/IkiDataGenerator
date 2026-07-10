@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 import string
 
 
@@ -9,7 +8,7 @@ class ApiKeyProvider(BaseProvider):
         self.prefix = prefix
 
     def generate_non_blank(self, row_data=None):
-        chosen_prefix = self.prefix or random.choice(self.it['prefix'])
+        chosen_prefix = self.prefix or self.get_random_data_by_list(self.it['prefix'])
         chars = string.ascii_letters + string.digits
-        key_body = ''.join(random.choice(chars) for _ in range(48))
+        key_body = ''.join(self.get_random_data_by_list(chars) for _ in range(48))
         return f"{chosen_prefix}{key_body}"

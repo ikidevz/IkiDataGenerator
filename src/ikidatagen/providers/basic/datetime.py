@@ -1,4 +1,3 @@
-import random
 import datetime
 import platform
 from ..base_provider import BaseProvider
@@ -45,7 +44,7 @@ class DatetimeProvider(BaseProvider):
         self, start: datetime.datetime, end: datetime.datetime
     ) -> datetime.datetime:
         delta = end - start
-        random_seconds = random.randint(0, int(delta.total_seconds()))
+        random_seconds = self.generate_integer(0, int(delta.total_seconds()))
         return start + datetime.timedelta(seconds=random_seconds)
 
     def _safe_epoch_seconds(self, dt: datetime.datetime) -> int:

@@ -1,4 +1,3 @@
-import random
 import string
 from ..base_provider import BaseProvider
 
@@ -23,10 +22,10 @@ class BankSwiftBicProvider(BaseProvider):
     def generate_non_blank(self, row_data=None):
         bank_code = self.get_random_data_by_list(self.bank_codes)
         country_code = self.get_random_data_by_list(self.country_codes)
-        location_code = ''.join(random.choices(
+        location_code = ''.join(self.get_random_choices_by_list(
             string.ascii_uppercase + string.digits, k=2))
 
-        branch_code = ''.join(random.choices(
-            string.ascii_uppercase, k=3)) if random.random() < 0.5 else ""
+        branch_code = ''.join(self.get_random_choices_by_list(
+            string.ascii_uppercase, k=3)) if self.get_random_object() < 0.5 else ""
 
         return f"{bank_code}{country_code}{location_code}{branch_code}"

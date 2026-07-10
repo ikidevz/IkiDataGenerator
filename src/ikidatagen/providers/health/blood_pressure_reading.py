@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class BloodPressureReadingProvider(BaseProvider):
@@ -7,9 +6,9 @@ class BloodPressureReadingProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        systolic = random.randint(90, 160)
+        systolic = self.generate_integer(90, 160)
         # Ensure diastolic lower bound is <= upper bound
         upper = min(100, systolic - 40)
         upper = max(60, upper)
-        diastolic = random.randint(60, upper)
+        diastolic = self.generate_integer(60, upper)
         return f"{systolic}/{diastolic}"

@@ -1,6 +1,5 @@
 import os
 import base64
-import random
 from ..base_provider import BaseProvider
 
 
@@ -13,6 +12,6 @@ class Base64ImageProvider(BaseProvider):
 
     def generate_non_blank(self, row_data=None) -> str:
         fmt = self.get_random_data_by_list(self.file["image"])
-        raw_bytes = self._random_bytes(random.randint(64, 256))
+        raw_bytes = self._random_bytes(self.generate_integer(64, 256))
         b64_data = base64.b64encode(raw_bytes).decode("utf-8")
         return f"data:image/{fmt};base64,{b64_data}"

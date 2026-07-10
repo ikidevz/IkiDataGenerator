@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class InsurancePolicyIdProvider(BaseProvider):
@@ -7,7 +6,7 @@ class InsurancePolicyIdProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        prefix = random.choice(["POL", "INS", "HMO", "LIFE", "AUTO",
+        prefix = self.get_random_data_by_list(["POL", "INS", "HMO", "LIFE", "AUTO",
                                "HOME", "TRVL", "HLTH", "DIS", "LIAB", "DENT", "VET"])
-        number = random.randint(100000, 999999)
+        number = self.generate_integer(100000, 999999)
         return f"{prefix}-{number}"

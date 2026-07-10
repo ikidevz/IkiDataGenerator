@@ -1,4 +1,3 @@
-import random
 import string
 from ..base_provider import BaseProvider
 
@@ -14,7 +13,7 @@ class EthereumAddressProvider(BaseProvider):
             list(hex_chars)) for _ in range(40))
 
         address = '0x' + ''.join(
-            c.upper() if random.random() < 0.3 else c for c in address_body
+            c.upper() if self.get_random_object() < 0.3 else c for c in address_body
         )
 
         return address

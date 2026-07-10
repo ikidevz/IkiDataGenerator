@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 import string
 
 
@@ -9,77 +8,93 @@ class PostalCodeProvider(BaseProvider):
 
         self.country_formats = {
             # 🌏 Asia-Pacific
-            "PH": lambda: str(random.randint(1000, 9999)),  # Philippines
+            "PH": lambda: str(self.generate_integer(1000, 9999)),  # Philippines
             # Japan
-            "JP": lambda: f"{random.randint(100, 999)}-{random.randint(1000, 9999)}",
-            "IN": lambda: str(random.randint(100000, 999999)),  # India
-            "CN": lambda: str(random.randint(100000, 999999)),  # China
-            "SG": lambda: str(random.randint(100000, 999999)),  # Singapore
+            "JP": lambda: f"{self.generate_integer(100, 999)}-{self.generate_integer(1000, 9999)}",
+            "IN": lambda: str(self.generate_integer(100000, 999999)),  # India
+            "CN": lambda: str(self.generate_integer(100000, 999999)),  # China
+            "SG": lambda: str(self.generate_integer(100000, 999999)),  # Singapore
             # Hong Kong (non-official)
-            "HK": lambda: str(random.randint(100000, 999999)),
+            "HK": lambda: str(self.generate_integer(100000, 999999)),
             # South Korea
-            "KR": lambda: f"{random.randint(100, 999)}-{random.randint(100, 999)}",
-            "AU": lambda: str(random.randint(200, 9999)),  # Australia
-            "NZ": lambda: str(random.randint(1000, 9999)),  # New Zealand
-            "TH": lambda: str(random.randint(10000, 99999)),  # Thailand
-            "MY": lambda: str(random.randint(10000, 99999)),  # Malaysia
+            "KR": lambda: f"{self.generate_integer(100, 999)}-{self.generate_integer(100, 999)}",
+            "AU": lambda: str(self.generate_integer(200, 9999)),  # Australia
+            "NZ": lambda: str(self.generate_integer(1000, 9999)),  # New Zealand
+            "TH": lambda: str(self.generate_integer(10000, 99999)),  # Thailand
+            "MY": lambda: str(self.generate_integer(10000, 99999)),  # Malaysia
 
             # 🌎 Americas
             "US": self._generate_us_zip,
             "CA": self._generate_ca_postal,
-            "MX": lambda: str(random.randint(10000, 99999)),  # Mexico
+            "MX": lambda: str(self.generate_integer(10000, 99999)),  # Mexico
             # Brazil
-            "BR": lambda: f"{random.randint(10000, 99999)}-{random.randint(100, 999)}",
+            "BR": lambda: f"{self.generate_integer(10000, 99999)}-{self.generate_integer(100, 999)}",
             # Argentina
-            "AR": lambda: f"{random.randint(1000, 9999)}{random.choice(string.ascii_uppercase)}{random.choice(string.ascii_uppercase)}",
-            "CL": lambda: str(random.randint(1000000, 9999999)),  # Chile
-            "CO": lambda: str(random.randint(100000, 999999)),  # Colombia
-            "PE": lambda: str(random.randint(10000, 99999)),  # Peru
+            "AR": lambda: f"{self.generate_integer(1000, 9999)}{self.get_random_data_by_list(string.ascii_uppercase)}{self.get_random_data_by_list(string.ascii_uppercase)}",
+            "CL": lambda: str(self.generate_integer(1000000, 9999999)),  # Chile
+            "CO": lambda: str(self.generate_integer(100000, 999999)),  # Colombia
+            "PE": lambda: str(self.generate_integer(10000, 99999)),  # Peru
 
             # 🌍 Europe
             "UK": self._generate_uk_postcode,
-            "DE": lambda: str(random.randint(10000, 99999)),  # Germany
-            "FR": lambda: str(random.randint(10000, 95999)),  # France
-            "ES": lambda: str(random.randint(1000, 52999)).zfill(5),  # Spain
-            "IT": lambda: str(random.randint(10000, 98100)),  # Italy
+            "DE": lambda: str(self.generate_integer(10000, 99999)),  # Germany
+            "FR": lambda: str(self.generate_integer(10000, 95999)),  # France
+            "ES": lambda: str(self.generate_integer(1000, 52999)).zfill(5),  # Spain
+            "IT": lambda: str(self.generate_integer(10000, 98100)),  # Italy
             # Netherlands
-            "NL": lambda: f"{random.randint(1000, 9999)}{random.choice(string.ascii_uppercase)}{random.choice(string.ascii_uppercase)}",
+            "NL": lambda: f"{self.generate_integer(1000, 9999)}{self.get_random_data_by_list(string.ascii_uppercase)}{self.get_random_data_by_list(string.ascii_uppercase)}",
             # Sweden
-            "SE": lambda: f"{random.randint(100, 999)} {random.randint(10, 99)}",
-            "NO": lambda: str(random.randint(1000, 9999)),  # Norway
+            "SE": lambda: f"{self.generate_integer(100, 999)} {self.generate_integer(10, 99)}",
+            "NO": lambda: str(self.generate_integer(1000, 9999)),  # Norway
             # Poland
-            "PL": lambda: f"{random.randint(10, 99)}-{random.randint(100, 999)}",
-            "CH": lambda: str(random.randint(1000, 9999)),  # Switzerland
+            "PL": lambda: f"{self.generate_integer(10, 99)}-{self.generate_integer(100, 999)}",
+            "CH": lambda: str(self.generate_integer(1000, 9999)),  # Switzerland
 
             # 🌍 Middle East & Africa
-            "AE": lambda: str(random.randint(10000, 99999)),  # UAE (approx.)
-            "SA": lambda: str(random.randint(10000, 99999)),  # Saudi Arabia
-            "ZA": lambda: str(random.randint(1000, 9999)),  # South Africa
-            "EG": lambda: str(random.randint(11111, 99999)),  # Egypt
-            "KE": lambda: str(random.randint(10000, 99999)),  # Kenya
+            "AE": lambda: str(self.generate_integer(10000, 99999)),  # UAE (approx.)
+            "SA": lambda: str(self.generate_integer(10000, 99999)),  # Saudi Arabia
+            "ZA": lambda: str(self.generate_integer(1000, 9999)),  # South Africa
+            "EG": lambda: str(self.generate_integer(11111, 99999)),  # Egypt
+            "KE": lambda: str(self.generate_integer(10000, 99999)),  # Kenya
         }
 
         self.available_countries = list(self.country_formats.keys())
 
     def _generate_us_zip(self):
         """US ZIP or ZIP+4"""
-        if random.random() < 0.2:
-            return f"{random.randint(10000, 99999)}-{random.randint(1000, 9999)}"
-        return str(random.randint(10000, 99999))
+        if self.get_random_object() < 0.2:
+            return f"{self.generate_integer(10000, 99999)}-{self.generate_integer(1000, 9999)}"
+        return str(self.generate_integer(10000, 99999))
 
     def _generate_ca_postal(self):
         """Canadian postal code: A1A 1A1"""
         letters = string.ascii_uppercase
         digits = string.digits
-        return f"{random.choice(letters)}{random.choice(digits)}{random.choice(letters)} {random.choice(digits)}{random.choice(letters)}{random.choice(digits)}"
+        return f"{self.get_random_data_by_list(letters)}{self.get_random_data_by_list(digits)}{self.get_random_data_by_list(letters)} {self.get_random_data_by_list(digits)}{self.get_random_data_by_list(letters)}{self.get_random_data_by_list(digits)}"
 
     def _generate_uk_postcode(self):
         """UK postal code (simplified realistic pattern)"""
         letters = string.ascii_uppercase
         digits = string.digits
-        return f"{random.choice(letters)}{random.choice(letters)}{random.choice(digits)} {random.choice(digits)}{random.choice(letters)}{random.choice(letters)}"
+        return f"{self.get_random_data_by_list(letters)}{self.get_random_data_by_list(letters)}{self.get_random_data_by_list(digits)} {self.get_random_data_by_list(digits)}{self.get_random_data_by_list(letters)}{self.get_random_data_by_list(letters)}"
 
     def generate_non_blank(self, row_data=None):
-        country = random.choice(self.available_countries)
-        postal_code = self.country_formats[country]()
-        return f"{country}-{postal_code}"
+        country_code = None
+        country = (row_data or {}).get('country')
+        if isinstance(country, str) and country.strip():
+            normalized = country.strip().upper()
+            if normalized in {'UK', 'GB', 'U.K.', 'UNITED KINGDOM', 'GREAT BRITAIN'}:
+                country_code = 'UK'
+            elif normalized in {'US', 'USA', 'U.S.', 'UNITED STATES', 'UNITED STATES OF AMERICA'}:
+                country_code = 'US'
+            else:
+                country_row = self.get_dataset_lookup(
+                    'countries', 'name').get(country)
+                if country_row:
+                    country_code = country_row.get('iso2')
+
+        if country_code not in self.country_formats:
+            country_code = self.get_random_data_by_list(self.available_countries)
+
+        postal_code = self.country_formats[country_code]()
+        return postal_code

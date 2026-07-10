@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 import string
 
 
@@ -10,12 +9,12 @@ class TrackingNumberProvider(BaseProvider):
     def generate_non_blank(self, row_data=None):
         prefixes = ["UPS", "FDX", "DHL", "LBC",
                     "USPS", "JNT", "NINJA", "GRB", "XDE"]
-        prefix = random.choice(prefixes)
-        numeric_part = ''.join(random.choices(
-            string.digits, k=random.randint(8, 12)))
+        prefix = self.get_random_data_by_list(prefixes)
+        numeric_part = ''.join(self.get_random_choices_by_list(
+            string.digits, k=self.generate_integer(8, 12)))
 
-        suffix = ''.join(random.choices(
-            string.ascii_uppercase, k=random.choice([0, 2, 3])))
+        suffix = ''.join(self.get_random_choices_by_list(
+            string.ascii_uppercase, k=self.get_random_data_by_list([0, 2, 3])))
         formats = [
             f"{prefix}{numeric_part}{suffix}",
             f"{prefix}-{numeric_part}-{suffix}" if suffix else f"{prefix}-{numeric_part}",
@@ -23,4 +22,4 @@ class TrackingNumberProvider(BaseProvider):
             f"{prefix}{numeric_part}"
         ]
 
-        return random.choice(formats)
+        return self.get_random_data_by_list(formats)

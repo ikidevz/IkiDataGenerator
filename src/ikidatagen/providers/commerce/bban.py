@@ -1,4 +1,3 @@
-import random
 import string
 from ..base_provider import BaseProvider
 
@@ -43,4 +42,4 @@ class BbanProvider(BaseProvider):
         else:
             chars = string.digits
 
-        return ''.join(random.choices(chars, k=self.length))
+        return ''.join(self.get_random_choices_by_list(chars, self.length))

@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class PackageWeightProvider(BaseProvider):
@@ -17,8 +16,8 @@ class PackageWeightProvider(BaseProvider):
             "t": (0.1, 5)
         }
 
-        unit = random.choice(list(unit_ranges.keys()))
+        unit = self.get_random_data_by_list(list(unit_ranges.keys()))
         low, high = unit_ranges[unit]
-        weight_value = round(random.uniform(low, high), 1)
+        weight_value = round(self.generate_float(low, high), 1)
 
         return f"{weight_value} {unit}"

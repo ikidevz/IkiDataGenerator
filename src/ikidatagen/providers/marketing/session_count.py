@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class SessionCountProvider(BaseProvider):
@@ -7,4 +6,4 @@ class SessionCountProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        return random.randint(0, 50)
+        return self.generate_integer(0, 50)

@@ -1,4 +1,3 @@
-import random
 from ..base_provider import BaseProvider
 
 
@@ -29,12 +28,12 @@ class IsbnProvider(BaseProvider):
         return str(check)
 
     def generate_non_blank(self, row_data=None):
-        version = random.choice(["ISBN10", "ISBN13"])
-        group = random.choice(self.GROUP_CODES)
+        version = self.get_random_data_by_list(["ISBN10", "ISBN13"])
+        group = self.get_random_data_by_list(self.GROUP_CODES)
 
         if version == "ISBN10":
             remaining_length = 9 - len(group)
-            body_digits = [random.randint(0, 9)
+            body_digits = [self.generate_integer(0, 9)
                            for _ in range(remaining_length)]
             prefix_digits = [int(d) for d in group]
             digits = prefix_digits + body_digits
@@ -44,11 +43,11 @@ class IsbnProvider(BaseProvider):
             return f"{isbn[:len(group)]}-{isbn[len(group):len(group)+3]}-{isbn[len(group)+3:-1]}-{isbn[-1]}"
 
         else:
-            prefix = random.choice([978, 979])  # EAN prefix
+            prefix = self.get_random_data_by_list([978, 979])  # EAN prefix
             prefix_digits = [int(x) for x in str(prefix)]
             group_digits = [int(x) for x in group]
             remaining_length = 12 - len(prefix_digits) - len(group_digits)
-            body_digits = [random.randint(0, 9)
+            body_digits = [self.generate_integer(0, 9)
                            for _ in range(remaining_length)]
             digits = prefix_digits + group_digits + body_digits
             check = self._calculate_isbn13_check_digit(digits)

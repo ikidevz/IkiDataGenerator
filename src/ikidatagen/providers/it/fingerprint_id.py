@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 import string
 
 
@@ -17,20 +16,20 @@ class FingerprintIdProvider(BaseProvider):
     def generate_non_blank(self, row_data=None):
         fmt = self.get_random_data_by_list(list(self.format_dict.keys()))
         if fmt == "FP-Sequential":
-            return f"FP{random.randint(1, 99999):05d}"
+            return f"FP{self.generate_integer(1, 99999):05d}"
         elif fmt == "FP-DateSeq":
             date_str = "20251104"  # for example, could use datetime.today().strftime("%Y%m%d")
-            seq = random.randint(1, 99)
+            seq = self.generate_integer(1, 99)
             return f"FP-{date_str}-{seq}"
         elif fmt == "FP-Alphanumeric":
-            alnum = ''.join(random.choices(
+            alnum = ''.join(self.get_random_choices_by_list(
                 string.ascii_lowercase + string.digits, k=8))
             return f"fp_{alnum}"
         elif fmt == "User-FP":
-            user = f"EMP{random.randint(100, 999)}"
-            seq = random.randint(1, 9)
+            user = f"EMP{self.generate_integer(100, 999)}"
+            seq = self.generate_integer(1, 9)
             return f"{user}-FP{seq}"
         elif fmt == "UID-Numeric":
-            return f"uid{random.randint(100000, 999999)}"
+            return f"uid{self.generate_integer(100000, 999999)}"
         else:
             return "FP_UNKNOWN"

@@ -11,8 +11,14 @@ class CountryCodeProvider(BaseProvider):
         city = row_data.get('city') if row_data else None
 
         if country:
-            return self.get_dataset_lookup('countries', 'name').get(country).get('iso2')
+            country_row = self.get_dataset_lookup(
+                'countries', 'name').get(country, {})
+            if country_row.get('iso2'):
+                return country_row.get('iso2')
         if city:
-            return self.get_dataset_lookup('countries', 'capital').get(city).get('iso2')
+            country_row = self.get_dataset_lookup(
+                'countries', 'capital').get(city, {})
+            if country_row.get('iso2'):
+                return country_row.get('iso2')
 
         return self.get_row_data_from_datasets('countries', 'iso2')

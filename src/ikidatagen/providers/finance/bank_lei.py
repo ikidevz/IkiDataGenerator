@@ -1,4 +1,3 @@
-import random
 import string
 from ..base_provider import BaseProvider
 
@@ -12,10 +11,10 @@ class BankLeiProvider(BaseProvider):
 
     def _random_alphanumeric(self, length: int) -> str:
         chars = string.ascii_uppercase + string.digits
-        return ''.join(random.choices(chars, k=length))
+        return ''.join(self.get_random_choices_by_list(chars, k=length))
 
     def generate_non_blank(self, row_data=None) -> str:
-        prefix = random.choice(self.prefixes)
+        prefix = self.get_random_data_by_list(self.prefixes)
         middle = self._random_alphanumeric(14)
-        suffix = ''.join(random.choices(string.digits, k=2))
+        suffix = ''.join(self.get_random_choices_by_list(string.digits, k=2))
         return prefix + middle + suffix

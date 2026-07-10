@@ -1,4 +1,3 @@
-import random
 from lorem_text import lorem
 from ..base_provider import BaseProvider
 
@@ -10,6 +9,7 @@ class ParagraphsProvider(BaseProvider):
         self.max_paragraph = max_paragraph
 
     def generate_non_blank(self, row_data=None):
-        num_paragraphs = random.randint(self.min_paragraph, self.max_paragraph)
+        num_paragraphs = self.generate_integer(
+            self.min_paragraph, self.max_paragraph)
         paragraphs = [lorem.paragraph() for _ in range(num_paragraphs)]
         return "\n\n".join(paragraphs)

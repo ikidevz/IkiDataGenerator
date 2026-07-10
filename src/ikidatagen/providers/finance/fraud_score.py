@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class FraudScoreProvider(BaseProvider):
@@ -7,4 +6,4 @@ class FraudScoreProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        return f"{round(random.uniform(0.01, 0.99), 2)}"
+        return f"{round(self.generate_float(0.01, 0.99), 2)}"

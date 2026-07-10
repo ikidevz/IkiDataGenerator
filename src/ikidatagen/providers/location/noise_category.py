@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class NoiseCategoryProvider(BaseProvider):

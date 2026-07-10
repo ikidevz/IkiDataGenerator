@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class FileSizeProvider(BaseProvider):
@@ -17,5 +16,5 @@ class FileSizeProvider(BaseProvider):
             "PB": (0.01, 1),
         }
         low, high = ranges[unit]
-        value = random.uniform(low, high)
+        value = self.generate_float(low, high)
         return f"{value:.2f} {unit}"

@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class AirQualityIndexProvider(BaseProvider):
@@ -21,6 +20,6 @@ class AirQualityIndexProvider(BaseProvider):
             if row_data:
                 category = row_data.get('air_quality_category')
                 if category in ranges:
-                    return random.randint(*ranges[category])
+                    return self.generate_integer(*ranges[category])
 
-        return random.randint(0, 500)
+        return self.generate_integer(0, 500)

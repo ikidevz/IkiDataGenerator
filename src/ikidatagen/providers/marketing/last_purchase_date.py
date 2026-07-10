@@ -1,6 +1,5 @@
 from ..base_provider import BaseProvider
 from datetime import datetime, timedelta
-import random
 
 
 class LastPurchaseDateProvider(BaseProvider):
@@ -11,5 +10,5 @@ class LastPurchaseDateProvider(BaseProvider):
     def generate_non_blank(self, row_data=None):
         end_date = datetime.now() - timedelta(days=1)  # yesterday
         start_date = end_date - timedelta(days=365 * self.years_ago)
-        random_date = start_date + (end_date - start_date) * random.random()
+        random_date = start_date + (end_date - start_date) * self.get_random_object()
         return random_date.strftime("%Y-%m-%d")

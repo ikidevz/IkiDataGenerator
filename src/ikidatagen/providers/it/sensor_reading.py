@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class SensorReadingProvider(BaseProvider):
@@ -7,5 +6,5 @@ class SensorReadingProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        value = random.uniform(0.01, 200.00)
+        value = self.generate_float(0.01, 200.00)
         return f"{value:.2f}"

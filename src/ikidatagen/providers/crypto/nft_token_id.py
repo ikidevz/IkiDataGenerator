@@ -1,6 +1,5 @@
 from ..base_provider import BaseProvider
 import string
-import random
 
 
 class NftTokenIdProvider(BaseProvider):
@@ -15,4 +14,4 @@ class NftTokenIdProvider(BaseProvider):
         else:
             chars = string.ascii_letters + string.digits
 
-        return ''.join(random.choice(chars) for _ in range(self.length))
+        return ''.join(self.get_random_data_by_list(chars) for _ in range(self.length))

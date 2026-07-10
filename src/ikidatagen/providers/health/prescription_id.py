@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class PrescriptionIdProvider(BaseProvider):
@@ -10,7 +9,7 @@ class PrescriptionIdProvider(BaseProvider):
         prefixes = [
             "RX", "MED", "SCRIPT", "DRUG", "PHARM", "RXN", "RXP", "MD"
         ]
-        prefix = random.choice(prefixes)
-        number = random.randint(100000, 999999)
+        prefix = self.get_random_data_by_list(prefixes)
+        number = self.generate_integer(100000, 999999)
 
         return f"{prefix}{number}"

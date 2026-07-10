@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class AccountNumberProvider(BaseProvider):
@@ -7,4 +6,4 @@ class AccountNumberProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        return "".join(str(random.randint(0, 9)) for _ in range(12))
+        return "".join(str(self.generate_integer(0, 9)) for _ in range(12))

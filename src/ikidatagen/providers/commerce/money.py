@@ -1,4 +1,3 @@
-import random
 from ..base_provider import BaseProvider
 
 
@@ -10,7 +9,7 @@ class MoneyProvider(BaseProvider):
         self.currency = currency
 
     def generate_non_blank(self, row_data=None):
-        amount = random.uniform(self.min, self.max)
+        amount = self.generate_float(self.min, self.max)
         formatted_amount = f"{amount:,.2f}"
 
         return f"{self.currency}{formatted_amount}"

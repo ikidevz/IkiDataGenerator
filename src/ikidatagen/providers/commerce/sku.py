@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 import datetime
 import string
 
@@ -10,16 +9,16 @@ class SkuProvider(BaseProvider):
 
     def generate_non_blank(self, row_data=None):
         year = datetime.datetime.now().year
-        letters = ''.join(random.choices(
-            string.ascii_uppercase, k=random.randint(2, 3)))
-        digits = ''.join(random.choices(string.digits, k=random.randint(3, 5)))
+        letters = ''.join(self.get_random_choices_by_list(
+            string.ascii_uppercase, k=self.generate_integer(2, 3)))
+        digits = ''.join(self.get_random_choices_by_list(string.digits, k=self.generate_integer(3, 5)))
 
         formats = [
             f"SKU-{digits}-{letters}",
-            f"PRD-{year}-{random.randint(100, 999)}",
+            f"PRD-{year}-{self.generate_integer(100, 999)}",
             f"ITEM-{digits}-{letters}",
             f"SKU-{letters}-{digits}",
             f"INV-{digits}-{letters}",
             f"CODE-{year}-{letters}",
         ]
-        return random.choice(formats)
+        return self.get_random_data_by_list(formats)

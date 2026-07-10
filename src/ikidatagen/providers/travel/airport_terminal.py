@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class AirportTerminalProvider(BaseProvider):
@@ -7,7 +6,7 @@ class AirportTerminalProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        prefix = random.choice(["Terminal", 'T'])
-        number = int(random.randint(1, 5))
+        prefix = self.get_random_data_by_list(["Terminal", 'T'])
+        number = int(self.generate_integer(1, 5))
 
         return f"{prefix} {number}" if prefix == "Terminal" else f"{prefix}{number}"

@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 import string
 
 
@@ -12,16 +11,16 @@ class DeliveryRouteCodeProvider(BaseProvider):
                           "EU", "US", "JP", "BR", "IN", "RU"]
         hub_codes = ["SEA", "LAX", "SIN", "MNL",
                      "DXB", "FRA", "HKG", "AMS", "JFK", "NRT"]
-        pattern_type = random.choice(["simple", "airport"])
+        pattern_type = self.get_random_data_by_list(["simple", "airport"])
 
         if pattern_type == "simple":
-            prefix = random.choice(route_prefixes)
-            number = random.randint(1, 999)
-            optional_letter = random.choice(
-                ["", random.choice(string.ascii_uppercase)])
+            prefix = self.get_random_data_by_list(route_prefixes)
+            number = self.generate_integer(1, 999)
+            optional_letter = self.get_random_data_by_list(
+                ["", self.get_random_data_by_list(list(string.ascii_uppercase))])
             return f"{prefix}-{number}{optional_letter}"
 
         else:  # Airport-to-airport style
-            origin, destination = random.sample(hub_codes, 2)
-            number = str(random.randint(1, 99)).zfill(2)
+            origin, destination = self.get_random_sample(hub_codes, 2)
+            number = str(self.generate_integer(1, 99)).zfill(2)
             return f"{origin}-{destination}-{number}"

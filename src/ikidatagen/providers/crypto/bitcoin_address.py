@@ -1,4 +1,3 @@
-import random
 import string
 from ..base_provider import BaseProvider
 
@@ -17,8 +16,8 @@ class BitcoinAddressProvider(BaseProvider):
 
         if prefix == "bc1":
             core = "".join(self.get_random_data_by_list(string.ascii_lowercase + string.digits)
-                           for _ in range(random.randint(25, 40)))
+                           for _ in range(self.generate_integer(25, 40)))
         else:
-            core = self._generate_base58(random.randint(25, 34))
+            core = self._generate_base58(self.generate_integer(25, 34))
 
         return prefix + core

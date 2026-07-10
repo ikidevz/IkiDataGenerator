@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class LabResultValueProvider(BaseProvider):
@@ -7,7 +6,7 @@ class LabResultValueProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        if random.random() < 0.4:
-            return str(random.randint(1, 300))
+        if self.get_random_object() < 0.4:
+            return str(self.generate_integer(1, 300))
         else:
-            return f"{round(random.uniform(1.0, 300.0), 1)}"
+            return f"{round(self.generate_float(1.0, 300.0), 1)}"

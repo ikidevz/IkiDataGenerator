@@ -15,11 +15,16 @@ class TemplateProvider(BaseProvider):
         if not row_data:
             return self.template
 
-        text = re.sub(r"\{\{([^}]+)\}\}", r"{\1}", self.template)
-        placeholders = re.findall(r"\{([^}]+)\}", text)
+        def replace_placeholder(match):
+            label = match.group(1).strip()
+            if label in row_data:
+                return str(row_data[label])
+            if label in self.schema_labels:
+                raise ValueError(
+                    f"Template placeholder '{{{{{label}}}}}' references a field not yet available in the current row."
+                )
+            raise ValueError(
+                f"Template placeholder '{{{{{label}}}}}' does not match any known schema field."
+            )
 
-        for label in placeholders:
-            value = row_data.get(label)
-            text = text.replace(f"{{{label}}}", str(value))
-
-        return text
+        return re.sub(r"\{\{([^}]+)\}\}", replace_placeholder, self.template)

@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class CreditScoreProvider(BaseProvider):
@@ -7,4 +6,4 @@ class CreditScoreProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        return random.randint(300, 850)
+        return self.generate_integer(300, 850)

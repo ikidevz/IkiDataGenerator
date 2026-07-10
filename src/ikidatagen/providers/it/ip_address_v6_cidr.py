@@ -1,4 +1,3 @@
-import random
 import ipaddress
 from ..base_provider import BaseProvider
 
@@ -8,6 +7,6 @@ class IpAddressV6CidrProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        ip = ipaddress.IPv6Address(random.randint(0, 2**128 - 1))
+        ip = ipaddress.IPv6Address(self.generate_integer(0, 2**128 - 1))
         prefix = self.get_random_data_by_list([32, 48, 64, 96, 128])
         return f"{ip}/{prefix}"

@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class GradeLevelProvider(BaseProvider):
@@ -7,7 +6,7 @@ class GradeLevelProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        num = random.randint(1, 12)
+        num = self.generate_integer(1, 12)
         suffix_grade = ['st', 'nd', 'rd', 'th']
 
         if num <= 3:

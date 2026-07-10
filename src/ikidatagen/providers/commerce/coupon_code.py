@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 import string
 import datetime
 
@@ -9,25 +8,20 @@ class CouponCodeProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        prefix = random.choice([
+        prefix_list = [
             "SAVE", "DEAL", "PROMO", "DISCOUNT", "SALE", "WELCOME",
             "OFFER", "FREESHIP", "BONUS", "BLACKFRIDAY", "CYBER", "NEWYEAR", "HOLIDAY",
-            "BLACKFRIDAY", "CYBER", "NEWYEAR", "HOLIDAY", "CHRISTMAS", "XMAS",
-            "EASTER", "SUMMER", "WINTER", "SPRING", "FALL", "VALENTINE",
-            "BACK2SCHOOL", "YEAR-END", "CLEARANCE",
-            "VIP", "MEMBER", "LOYALTY", "REWARD", "THANKYOU", "RETURNCUSTOMER",
-            "REFER", "FRIEND", "POINTS", "CASHBACK",
+            "CHRISTMAS", "XMAS", "EASTER", "SUMMER", "WINTER", "SPRING", "FALL", "VALENTINE",
+            "BACK2SCHOOL", "YEAR-END", "CLEARANCE", "VIP", "MEMBER", "LOYALTY",
+            "REWARD", "THANKYOU", "RETURNCUSTOMER", "REFER", "FRIEND", "POINTS", "CASHBACK",
             "LIMITED", "FLASH", "HOTDEAL", "WEEKEND", "EARLYBIRD", "LAUNCH",
             "INTRO", "FIRSTORDER", "TRYME", "WELCOME2025"
-        ])
-
-        numeric = str(random.randint(5, 75))
-        letters = ''.join(random.choices(
-            string.ascii_uppercase + string.digits, k=random.randint(3, 6)))
-
+        ]
+        prefix = self.get_random_data_by_list(prefix_list)
+        numeric = str(self.generate_integer(5, 75))
+        letters = ''.join(self.get_random_choices_by_list(
+            string.ascii_uppercase + string.digits, self.generate_integer(3, 6)))
         year = str(datetime.datetime.now().year)[-2:]
-
-        # Random pattern variations
         formats = [
             f"{prefix}{numeric}",
             f"{prefix}{year}",
@@ -36,4 +30,4 @@ class CouponCodeProvider(BaseProvider):
             f"{prefix}-{numeric}{year}",
             f"{prefix}{letters}{numeric}"
         ]
-        return random.choice(formats)
+        return self.get_random_data_by_list(formats)

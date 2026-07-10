@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 import datetime
 
 
@@ -9,9 +8,9 @@ class InvoiceNumberProvider(BaseProvider):
 
     def generate_non_blank(self, row_data=None):
         prefixes = ["INV", "BILL", "RCPT", "PAY", "TXN"]
-        prefix = random.choice(prefixes)
+        prefix = self.get_random_data_by_list(prefixes)
         year = datetime.datetime.now().year
-        number = random.randint(1, 999999)
+        number = self.generate_integer(1, 999999)
 
         # Randomly pick a format pattern
         formats = [
@@ -19,6 +18,6 @@ class InvoiceNumberProvider(BaseProvider):
             f"{prefix}-{number:06d}",
             f"{year}-{prefix}-{number:05d}",
             f"{prefix}{year}{number:04d}",
-            f"{prefix.upper()}-{random.randint(10, 99)}-{number:04d}",
+            f"{prefix.upper()}-{self.generate_integer(10, 99)}-{number:04d}",
         ]
-        return random.choice(formats)
+        return self.get_random_data_by_list(formats)

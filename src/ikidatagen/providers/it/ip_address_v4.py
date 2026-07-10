@@ -1,4 +1,3 @@
-import random
 import ipaddress
 from ..base_provider import BaseProvider
 
@@ -8,4 +7,4 @@ class IpAddressV4Provider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        return str(ipaddress.IPv4Address(random.randint(0, 2**32 - 1)))
+        return str(ipaddress.IPv4Address(self.generate_integer(0, 2**32 - 1)))

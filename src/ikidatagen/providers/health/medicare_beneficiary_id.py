@@ -1,4 +1,3 @@
-import random
 import string
 from ..base_provider import BaseProvider
 
@@ -8,7 +7,7 @@ class MedicareBeneficiaryIdProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def _rand_digit(self, non_zero=False):
-        return str(random.randint(1, 9) if non_zero else random.randint(0, 9))
+        return str(self.generate_integer(1, 9) if non_zero else self.generate_integer(0, 9))
 
     def generate_non_blank(self, row_data=None):
 

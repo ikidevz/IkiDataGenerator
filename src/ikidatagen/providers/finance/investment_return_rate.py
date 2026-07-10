@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class InvestmentReturnRateProvider(BaseProvider):
@@ -9,5 +8,5 @@ class InvestmentReturnRateProvider(BaseProvider):
         self.max_return = max_return
 
     def generate_non_blank(self, row_data=None):
-        rate = round(random.uniform(self.min_return, self.max_return), 1)
+        rate = round(self.generate_float(self.min_return, self.max_return), 1)
         return f"{rate}%"

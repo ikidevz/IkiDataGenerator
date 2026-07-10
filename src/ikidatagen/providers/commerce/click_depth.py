@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class ClickDepthProvider(BaseProvider):
@@ -7,10 +6,10 @@ class ClickDepthProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        r = random.random()
+        r = self.get_random_object()
         if r < 0.70:
-            return random.randint(1, 4)
+            return self.generate_integer(1, 4)
         elif r < 0.95:
-            return random.randint(5, 8)
+            return self.generate_integer(5, 8)
         else:
-            return random.randint(9, 12)
+            return self.generate_integer(9, 12)

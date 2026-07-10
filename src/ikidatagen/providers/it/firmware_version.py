@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class FirmwareVersionProvider(BaseProvider):
@@ -14,17 +13,17 @@ class FirmwareVersionProvider(BaseProvider):
         }
 
     def generate_non_blank(self, row_data=None):
-        fmt = random.choice(list(self.format_dict.keys()))
+        fmt = self.get_random_data_by_list(list(self.format_dict.keys()))
 
         if fmt == "SemVer":
-            return f"{random.randint(0, 5)}.{random.randint(0, 10)}.{random.randint(0, 20)}"
+            return f"{self.generate_integer(0, 5)}.{self.generate_integer(0, 10)}.{self.generate_integer(0, 20)}"
         elif fmt == "PrefixedV":
-            return f"v{random.randint(0, 5)}.{random.randint(0, 10)}.{random.randint(0, 20)}"
+            return f"v{self.generate_integer(0, 5)}.{self.generate_integer(0, 10)}.{self.generate_integer(0, 20)}"
         elif fmt == "FW_Prefix":
-            return f"FW_{random.randint(0, 5)}.{random.randint(0, 10)}.{random.randint(0, 20)}"
+            return f"FW_{self.generate_integer(0, 5)}.{self.generate_integer(0, 10)}.{self.generate_integer(0, 20)}"
         elif fmt == "ShortVersion":
-            return f"{random.randint(0, 5)}.{random.randint(0, 10)}"
+            return f"{self.generate_integer(0, 5)}.{self.generate_integer(0, 10)}"
         elif fmt == "BuildNumber":
-            return str(random.randint(1000, 9999))
+            return str(self.generate_integer(1000, 9999))
         else:
             return "0.0.0"

@@ -1,5 +1,4 @@
 from ..base_provider import BaseProvider
-import random
 
 
 class RecommendationConfidenceScoreProvider(BaseProvider):
@@ -10,6 +9,6 @@ class RecommendationConfidenceScoreProvider(BaseProvider):
     def generate_non_blank(self, row_data=None):
 
         if self.fmt == 'decimal':
-            return round(random.uniform(0, 0.99), 2)
+            return round(self.generate_float(0, 0.99), 2)
         else:
-            return f"{random.randint(0, 99)}%"
+            return f"{self.generate_integer(0, 99)}%"

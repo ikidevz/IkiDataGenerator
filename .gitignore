@@ -11,3 +11,4 @@ test.py
 ARTICLE.md
 output/*
 structure.py
+tests/output/
