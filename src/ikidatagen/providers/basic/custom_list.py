@@ -18,4 +18,8 @@ class CustomListProvider(BaseProvider):
             self.custom_format = []
 
     def generate_non_blank(self, row_data=None):
+        if not self.custom_format:
+            raise ValueError(
+                "[Schema Error] CustomListProvider requires a non-empty 'values' option or list."
+            )
         return self.get_random_data_by_list(self.custom_format)

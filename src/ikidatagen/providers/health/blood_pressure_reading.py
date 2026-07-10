@@ -8,5 +8,8 @@ class BloodPressureReadingProvider(BaseProvider):
 
     def generate_non_blank(self, row_data=None):
         systolic = random.randint(90, 160)
-        diastolic = random.randint(60, min(100, systolic - 40))
+        # Ensure diastolic lower bound is <= upper bound
+        upper = min(100, systolic - 40)
+        upper = max(60, upper)
+        diastolic = random.randint(60, upper)
         return f"{systolic}/{diastolic}"

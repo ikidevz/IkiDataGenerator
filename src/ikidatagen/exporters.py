@@ -8,6 +8,20 @@ import pyarrow as pa
 import csv
 import json
 import duckdb
+import re
+
+
+_IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def _safe_identifier(name: str) -> str:
+    if not isinstance(name, str):
+        raise ValueError(
+            f"[Exporter] Unsafe identifier: {name!r}. Must be a string.")
+    if not _IDENTIFIER_RE.match(name):
+        raise ValueError(
+            f"[Exporter] Unsafe identifier '{name}'. Table/column names must match ^[A-Za-z_][A-Za-z0-9_]*$.")
+    return name
 
 
 class Exporter:
@@ -49,6 +63,8 @@ class Exporter:
             raise ValueError("No data to export.")
         Path(file_path).parent.mkdir(parents=True, exist_ok=True)
         columns = list(data[0].keys())
+        table_name = _safe_identifier(table_name)
+        columns = [_safe_identifier(c) for c in columns]
 
         def format_sql_value(v):
             if v is None:
@@ -97,6 +113,9 @@ class Exporter:
             raise ValueError("No data to export.")
         Path(file_path).parent.mkdir(parents=True, exist_ok=True)
         columns = list(data[0].keys())
+        keyspace = _safe_identifier(keyspace)
+        table_name = _safe_identifier(table_name)
+        columns = [_safe_identifier(c) for c in columns]
 
         type_map = {}
         for col, val in data[0].items():
@@ -190,6 +209,7 @@ class Exporter:
         if not data:
             raise ValueError("No data to export.")
         Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+        table_name = _safe_identifier(table_name)
 
         dataset = ET.Element("dataset")
         for row in data:
@@ -217,6 +237,7 @@ class Exporter:
         Path(file_path).parent.mkdir(parents=True, exist_ok=True)
 
         df = pd.DataFrame(data)
+        table_name = _safe_identifier(table_name)
         con = duckdb.connect(file_path)
         con.execute(
             f"CREATE OR REPLACE TABLE {table_name} AS SELECT * FROM df")

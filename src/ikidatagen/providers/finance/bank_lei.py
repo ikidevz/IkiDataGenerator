@@ -14,7 +14,7 @@ class BankLeiProvider(BaseProvider):
         chars = string.ascii_uppercase + string.digits
         return ''.join(random.choices(chars, k=length))
 
-    def generate_non_blank(self) -> str:
+    def generate_non_blank(self, row_data=None) -> str:
         prefix = random.choice(self.prefixes)
         middle = self._random_alphanumeric(14)
         suffix = ''.join(random.choices(string.digits, k=2))

@@ -59,12 +59,22 @@ class ProviderFactory:
 
             return provider_class(**kwargs)
 
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as e:
+            # Differentiate between the provider module itself being missing
+            # and the provider module raising ModuleNotFoundError for a nested import
+            missing_mod = getattr(e, "name", None)
+            if missing_mod == module_path or (missing_mod and missing_mod.startswith(module_path + ".")):
+                raise ValueError(
+                    f"[Schema Error] Provider module not found for key_label='{key_label}', group='{resolved_group}'.\n"
+                    f"  → Expected module at: {module_path}.py\n"
+                    f"  → If this is a custom provider, make sure the file and class exist."
+                ) from e
+            # Otherwise the provider file exists but it imported a missing dependency.
             raise ValueError(
-                f"[Schema Error] Provider module not found for key_label='{key_label}', group='{resolved_group}'.\n"
-                f"  → Expected module at: {module_path}.py\n"
-                f"  → If this is a custom provider, make sure the file and class exist."
-            )
+                f"[Schema Error] Provider '{module_path}' failed to import: missing dependency '{missing_mod}'.\n"
+                f"  → This usually means a third-party package is not installed. Install the package or fix the provider's imports.\n"
+                f"  → Original error: {e}"
+            ) from e
         except AttributeError:
             raise ValueError(
                 f"[Schema Error] Provider class '{class_name}' not found inside module '{module_path}'.\n"

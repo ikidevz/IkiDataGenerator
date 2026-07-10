@@ -88,6 +88,11 @@ class BaseGenerator:
             provider = data["provider"]
 
             pct = (getattr(provider, "blank_percentage", 0.0) or 0.0) / 100
+            if not 0 <= pct <= 1:
+                raise ValueError(
+                    f"[Schema Error] Invalid blank_percentage for label '{label}': {pct*100}. "
+                    "Must be between 0 and 100."
+                )
             num_blanks = round(n * pct)
             blank_set = set(random.sample(range(n), num_blanks)
                             ) if num_blanks > 0 else set()
@@ -121,6 +126,12 @@ class BaseGenerator:
                 group=group,
                 **options,
             )
+
+            if label in providers:
+                raise ValueError(
+                    f"[Schema Error] Duplicate output label '{label}' in schema. "
+                    "Each output column label must be unique."
+                )
 
             providers[label] = {
                 "provider":  provider_instance,

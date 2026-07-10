@@ -11,8 +11,8 @@ class Base64ImageProvider(BaseProvider):
     def _random_bytes(self, length: int = 64) -> bytes:
         return os.urandom(length)
 
-    def generate_non_blank(self) -> str:
-        fmt = self.get_random_data_by_list(self.format['file']["image"])
+    def generate_non_blank(self, row_data=None) -> str:
+        fmt = self.get_random_data_by_list(self.file["image"])
         raw_bytes = self._random_bytes(random.randint(64, 256))
         b64_data = base64.b64encode(raw_bytes).decode("utf-8")
         return f"data:image/{fmt};base64,{b64_data}"
