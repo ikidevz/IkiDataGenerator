@@ -1,11 +1,16 @@
 import importlib
 import difflib
+import warnings
 
-from .schema_registry import KEY_LABEL_REGISTRY
+from .schema_registry import (
+    KEY_LABEL_REGISTRY,
+    resolve_key_label,
+)
 
 
 class ProviderFactory:
     _cache: dict = {}
+    _files_map: dict | None = None
 
     @staticmethod
     def resolve_group(key_label: str, group: str | None) -> str:
@@ -20,8 +25,51 @@ class ProviderFactory:
         if group:
             return group.lower()
 
+        normalized = key_label.lower()
+        canonical_key_label = resolve_key_label(normalized)
+        if canonical_key_label != normalized:
+            warnings.warn(
+                f"[Schema Deprecation] '{key_label}' is deprecated and will be treated as '{canonical_key_label}'. "
+                f"Update your schema to use the canonical key_label.",
+                DeprecationWarning,
+                stacklevel=3,
+            )
+            key_label = canonical_key_label
+
         resolved = KEY_LABEL_REGISTRY.get(key_label)
         if resolved:
+            # Quick duplicate-file check: warn if same basename exists in multiple groups
+            try:
+                if ProviderFactory._files_map is None:
+                    # build once
+                    from pathlib import Path
+                    pkg_root = Path(__file__).resolve().parent
+                    providers_root = pkg_root / "providers"
+                    files_map: dict[str, list[str]] = {}
+                    if providers_root.exists():
+                        for p in providers_root.rglob('*.py'):
+                            name = p.name
+                            group = p.parent.name
+                            files_map.setdefault(name, []).append(group)
+                    ProviderFactory._files_map = files_map
+                dup_groups = ProviderFactory._files_map.get(
+                    f"{key_label}.py", [])
+                if len(dup_groups) > 1 and resolved not in dup_groups:
+                    # if registry resolves to a group but the file exists elsewhere, warn
+                    warnings.warn(
+                        f"Provider key_label '{key_label}' exists in multiple groups: {', '.join(dup_groups)}. "
+                        f"Registry chooses '{resolved}'. Use explicit 'group' to disambiguate.",
+                        UserWarning,
+                    )
+                elif len(dup_groups) > 1:
+                    warnings.warn(
+                        f"Provider key_label '{key_label}' exists in multiple groups: {', '.join(dup_groups)}. "
+                        f"Registry maps it to '{resolved}'. Use explicit 'group' to disambiguate if needed.",
+                        UserWarning,
+                    )
+            except Exception:
+                # non-fatal — discovery is best-effort
+                ProviderFactory._files_map = ProviderFactory._files_map or {}
             return resolved
         close = difflib.get_close_matches(
             key_label, KEY_LABEL_REGISTRY.keys(), n=3, cutoff=0.6)
@@ -42,12 +90,25 @@ class ProviderFactory:
 
         group is optional — it will be auto-resolved from the registry when omitted.
         """
-        resolved_group = ProviderFactory.resolve_group(key_label, group)
+        normalized = key_label.lower()
+        canonical_key_label = resolve_key_label(normalized)
+        if canonical_key_label != normalized:
+            warnings.warn(
+                f"[Schema Deprecation] '{key_label}' is deprecated and will be treated as '{canonical_key_label}'. "
+                f"Update your schema to use the canonical key_label.",
+                DeprecationWarning,
+                stacklevel=3,
+            )
+            key_label = canonical_key_label
+            normalized = canonical_key_label
 
-        module_path = f"{__package__}.providers.{resolved_group}.{key_label.lower()}"
+        resolved_group = ProviderFactory.resolve_group(key_label, group)
+        import_group = (group or resolved_group).lower()
+
+        module_path = f"{__package__}.providers.{import_group}.{normalized}"
         class_name = "".join(word.capitalize()
                              for word in key_label.split("_")) + "Provider"
-        cache_key = (resolved_group, key_label)
+        cache_key = (import_group, normalized)
 
         try:
             if cache_key in ProviderFactory._cache:
@@ -57,7 +118,23 @@ class ProviderFactory:
                 provider_class = getattr(module, class_name)
                 ProviderFactory._cache[cache_key] = provider_class
 
-            return provider_class(**kwargs)
+            # Only pass kwargs that the provider's __init__ supports.
+            try:
+                import inspect
+
+                sig = inspect.signature(provider_class.__init__)
+                params = sig.parameters
+                accepts_kwargs = any(
+                    p.kind == inspect.Parameter.VAR_KEYWORD for p in params.values()
+                )
+                if not accepts_kwargs:
+                    filtered = {k: v for k, v in kwargs.items() if k in params}
+                else:
+                    filtered = kwargs
+            except Exception:
+                filtered = kwargs
+
+            return provider_class(**filtered)
 
         except ModuleNotFoundError as e:
             # Differentiate between the provider module itself being missing

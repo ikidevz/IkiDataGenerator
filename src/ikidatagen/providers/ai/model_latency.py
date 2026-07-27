@@ -1,5 +1,5 @@
 from ..base_provider import BaseProvider
-from ..communication.latency import LatencyProvider
+from ..telecom.latency import LatencyProvider
 
 
 class ModelLatencyProvider(BaseProvider):

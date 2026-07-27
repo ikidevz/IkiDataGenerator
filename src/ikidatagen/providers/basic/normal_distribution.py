@@ -8,6 +8,11 @@ class NormalDistributionProvider(BaseProvider):
         self.mean = mean
         self.std_dev = std_dev
         self.decimals = decimals
+        try:
+            seed = self._rng.randint(0, 2**32 - 1)
+        except Exception:
+            seed = None
+        self._np_rng = np.random.default_rng(seed)
 
     def generate_non_blank(self, row_data=None):
-        return round(np.random.normal(self.mean, self.std_dev), self.decimals)
+        return round(self._np_rng.normal(self.mean, self.std_dev), self.decimals)

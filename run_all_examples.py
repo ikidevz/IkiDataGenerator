@@ -15,6 +15,12 @@ if sys.platform.startswith("win"):
     os.system("chcp 65001 > nul")
     sys.stdout.reconfigure(encoding="utf-8")
 
+# Ensure local source package is imported before any installed version
+project_root = Path(__file__).resolve().parent
+src_path = project_root / "src"
+if str(src_path) not in sys.path:
+    sys.path.insert(0, str(src_path))
+
 
 def run_examples(examples_dir="examples", pattern="*.py", verbose=True):
     """
@@ -29,6 +35,9 @@ def run_examples(examples_dir="examples", pattern="*.py", verbose=True):
     if not examples_path.exists():
         print(f"❌ Error: Examples directory not found at {examples_path}")
         return None
+
+    output_dir = script_dir / "output"
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     # Find all matching files
     example_files = sorted(examples_path.glob(pattern))
@@ -58,6 +67,10 @@ def run_examples(examples_dir="examples", pattern="*.py", verbose=True):
         print(
             f"  [{idx:2d}/{len(example_files)}] ▶️  RUN   {filename}...", end="", flush=True)
 
+        env = os.environ.copy()
+        env["PYTHONPATH"] = str(src_path) + os.pathsep + \
+            env.get("PYTHONPATH", "")
+
         try:
             # Run using absolute path to avoid cwd issues
             result = subprocess.run(
@@ -65,7 +78,8 @@ def run_examples(examples_dir="examples", pattern="*.py", verbose=True):
                 capture_output=True,
                 text=True,
                 timeout=300,
-                cwd=script_dir.parent  # Optional: set cwd to project root
+                cwd=script_dir.parent,  # Optional: set cwd to project root
+                env=env,
             )
 
             if result.returncode == 0:

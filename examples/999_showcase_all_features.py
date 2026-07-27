@@ -5,7 +5,9 @@ This example demonstrates ALL major features of Iki Data Generator in one script
 Run this to see what's possible!
 """
 
-from ikidatagen import IkiDataGenerator
+import asyncio
+
+from ikidatagen import IkiDataGenerator, SchemaBuilder
 
 print("COMPLETE FEATURE SHOWCASE FOR IKI DATA GENERATOR")
 print("=" * 60)
@@ -86,12 +88,12 @@ regex_schema = [
     {
         "key_label": "regular_expression",
         "label": "Order ID",
-        "options": {"pattern": "ORD-[A-Z]{3}-[0-9]{5}"}
+        "options": {"format": "ORD-[A-Z]{3}-[0-9]{5}"}
     },
     {
         "key_label": "regular_expression",
         "label": "Product Code",
-        "options": {"pattern": "P[0-9]{4}[A-Z]{2}"}
+        "options": {"format": "P[0-9]{4}[A-Z]{2}"}
     },
 ]
 IkiDataGenerator(regex_schema).many(50).export(
@@ -195,7 +197,33 @@ IkiDataGenerator(large_schema).many(100000).export(
     "showcase_large", formats=["parquet"])
 print("[OK] Generated 100,000 records efficiently")
 
-# Feature 12: Real-World Scenario
+# Feature 12: Streamed Export for Large Datasets (Advanced)
+print("\n Streamed Export for Large Datasets")
+print("-" * 60)
+stream_schema = ["first_name", "last_name", "email_address", "country"]
+IkiDataGenerator(stream_schema).export(
+    "showcase_stream",
+    formats=["csv"],
+    stream=True,
+    n=20000,
+    batch_size=5000,
+)
+print("[OK] Stream-exported 20,000 records efficiently")
+
+# Feature 13: Programmatic Schema + Async Generation (Advanced)
+print("\n Programmatic Schema + Async Generation")
+print("-" * 60)
+builder = SchemaBuilder()
+builder.add_field("first_name")
+builder.add_field("email_address", options={"blank_percentage": 0})
+builder.add_field("password_hash", options={"fast": True})
+builder.add_field("current_timestamp")
+async_schema = builder.build()
+async_gen = IkiDataGenerator(async_schema, seed=42)
+async_rows = asyncio.run(async_gen.many_async(25))
+print(f"[OK] Async generated {len(async_rows)} rows with SchemaBuilder")
+
+# Feature 14: Real-World Scenario
 print("\n Real-World E-Commerce Scenario")
 print("-" * 60)
 ecommerce_schema = [
@@ -237,6 +265,7 @@ print("   - showcase_lists.csv")
 print("   - showcase_formats.* (csv, json, tsv, parquet)")
 print("   - showcase_categories.json")
 print("   - showcase_large.parquet (100K records!)")
+print("   - showcase_stream.csv")
 print("   - showcase_ecommerce.* (csv, json)")
 print("\n Next steps:")
 print("   1. Review the output files")

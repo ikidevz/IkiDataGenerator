@@ -4,22 +4,26 @@ import string
 
 class PostalCodeProvider(BaseProvider):
     def __init__(self, blank_percentage: float = 0.0,  **kwargs):
-        super().__init__(blank_percentage=blank_percentage, **kwargs)
+        super().__init__(blank_percentage=blank_percentage,
+                         datasets=["countries"], **kwargs)
 
         self.country_formats = {
             # 🌏 Asia-Pacific
-            "PH": lambda: str(self.generate_integer(1000, 9999)),  # Philippines
+            # Philippines
+            "PH": lambda: str(self.generate_integer(1000, 9999)),
             # Japan
             "JP": lambda: f"{self.generate_integer(100, 999)}-{self.generate_integer(1000, 9999)}",
             "IN": lambda: str(self.generate_integer(100000, 999999)),  # India
             "CN": lambda: str(self.generate_integer(100000, 999999)),  # China
-            "SG": lambda: str(self.generate_integer(100000, 999999)),  # Singapore
+            # Singapore
+            "SG": lambda: str(self.generate_integer(100000, 999999)),
             # Hong Kong (non-official)
             "HK": lambda: str(self.generate_integer(100000, 999999)),
             # South Korea
             "KR": lambda: f"{self.generate_integer(100, 999)}-{self.generate_integer(100, 999)}",
             "AU": lambda: str(self.generate_integer(200, 9999)),  # Australia
-            "NZ": lambda: str(self.generate_integer(1000, 9999)),  # New Zealand
+            # New Zealand
+            "NZ": lambda: str(self.generate_integer(1000, 9999)),
             "TH": lambda: str(self.generate_integer(10000, 99999)),  # Thailand
             "MY": lambda: str(self.generate_integer(10000, 99999)),  # Malaysia
 
@@ -31,15 +35,18 @@ class PostalCodeProvider(BaseProvider):
             "BR": lambda: f"{self.generate_integer(10000, 99999)}-{self.generate_integer(100, 999)}",
             # Argentina
             "AR": lambda: f"{self.generate_integer(1000, 9999)}{self.get_random_data_by_list(string.ascii_uppercase)}{self.get_random_data_by_list(string.ascii_uppercase)}",
-            "CL": lambda: str(self.generate_integer(1000000, 9999999)),  # Chile
-            "CO": lambda: str(self.generate_integer(100000, 999999)),  # Colombia
+            # Chile
+            "CL": lambda: str(self.generate_integer(1000000, 9999999)),
+            # Colombia
+            "CO": lambda: str(self.generate_integer(100000, 999999)),
             "PE": lambda: str(self.generate_integer(10000, 99999)),  # Peru
 
             # 🌍 Europe
             "UK": self._generate_uk_postcode,
             "DE": lambda: str(self.generate_integer(10000, 99999)),  # Germany
             "FR": lambda: str(self.generate_integer(10000, 95999)),  # France
-            "ES": lambda: str(self.generate_integer(1000, 52999)).zfill(5),  # Spain
+            # Spain
+            "ES": lambda: str(self.generate_integer(1000, 52999)).zfill(5),
             "IT": lambda: str(self.generate_integer(10000, 98100)),  # Italy
             # Netherlands
             "NL": lambda: f"{self.generate_integer(1000, 9999)}{self.get_random_data_by_list(string.ascii_uppercase)}{self.get_random_data_by_list(string.ascii_uppercase)}",
@@ -48,12 +55,16 @@ class PostalCodeProvider(BaseProvider):
             "NO": lambda: str(self.generate_integer(1000, 9999)),  # Norway
             # Poland
             "PL": lambda: f"{self.generate_integer(10, 99)}-{self.generate_integer(100, 999)}",
-            "CH": lambda: str(self.generate_integer(1000, 9999)),  # Switzerland
+            # Switzerland
+            "CH": lambda: str(self.generate_integer(1000, 9999)),
 
             # 🌍 Middle East & Africa
-            "AE": lambda: str(self.generate_integer(10000, 99999)),  # UAE (approx.)
-            "SA": lambda: str(self.generate_integer(10000, 99999)),  # Saudi Arabia
-            "ZA": lambda: str(self.generate_integer(1000, 9999)),  # South Africa
+            # UAE (approx.)
+            "AE": lambda: str(self.generate_integer(10000, 99999)),
+            # Saudi Arabia
+            "SA": lambda: str(self.generate_integer(10000, 99999)),
+            # South Africa
+            "ZA": lambda: str(self.generate_integer(1000, 9999)),
             "EG": lambda: str(self.generate_integer(11111, 99999)),  # Egypt
             "KE": lambda: str(self.generate_integer(10000, 99999)),  # Kenya
         }
@@ -94,7 +105,8 @@ class PostalCodeProvider(BaseProvider):
                     country_code = country_row.get('iso2')
 
         if country_code not in self.country_formats:
-            country_code = self.get_random_data_by_list(self.available_countries)
+            country_code = self.get_random_data_by_list(
+                self.available_countries)
 
         postal_code = self.country_formats[country_code]()
         return postal_code

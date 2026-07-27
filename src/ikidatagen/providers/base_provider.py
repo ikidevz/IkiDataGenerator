@@ -23,19 +23,25 @@ class BaseProvider(ABC):
         *,
         blank_percentage: float = 0.0,
         datasets: list[str] | None = None,
+        rng: random.Random | None = None,
+        strict: bool = True,
+        unique: bool | None = None,
+        max_unique_tries: int | None = None,
         **kwargs,
     ):
         if kwargs:
-            warnings.warn(
+            msg = (
                 f"[{self.__class__.__name__}] Unknown option(s) ignored: {', '.join(kwargs.keys())}. "
-                f"Check for typos in your schema 'options'.",
-                UserWarning,
-                stacklevel=3,
+                f"Check for typos in your schema 'options'."
             )
+            if strict:
+                raise ValueError(msg)
+            warnings.warn(msg, UserWarning, stacklevel=3)
 
         self.blank_percentage = float(blank_percentage or 0.0)
         self.datasets = datasets or []
         self.data = None
+        self._rng = rng or random
 
         _d = self._get_datasets()
         self.ai = _d.get("ai", {})
@@ -56,6 +62,7 @@ class BaseProvider(ABC):
         self.marketing = _d.get("marketing", {})
         self.nature = _d.get("nature", {})
         self.personal = _d.get("personal", {})
+        self.misc = _d.get("misc", {})
         self.political = _d.get("political", {})
         self.products = _d.get("products", {})
         self.sports = _d.get("sports", {})
@@ -68,7 +75,7 @@ class BaseProvider(ABC):
         self.street = _d.get("street", {})
 
     @abstractmethod
-    def generate_non_blank(self, row_data: dict | None = None):
+    def generate_non_blank(self, row_data: dict | None = None, row_index: int | None = None):
         raise NotImplementedError
 
     def generate(self, row_data: dict | None = None):
@@ -87,27 +94,27 @@ class BaseProvider(ABC):
             self.data = tuple(
                 d.get(columns) for d in datasets[dataset] if d.get(columns)
             )
-        return random.choice(self.data)
+        return self._rng.choice(self.data)
 
     def sublify_char(self, symbol: str) -> str:
         match symbol:
-            case "#": return random.choice(string.digits)
-            case "@": return random.choice(string.ascii_lowercase)
-            case "^": return random.choice(string.ascii_uppercase)
-            case "*": return random.choice(string.ascii_letters + string.digits)
-            case "$": return random.choice(string.ascii_lowercase + string.digits)
-            case "%": return random.choice(string.ascii_uppercase + string.digits)
+            case "#": return self._rng.choice(string.digits)
+            case "@": return self._rng.choice(string.ascii_lowercase)
+            case "^": return self._rng.choice(string.ascii_uppercase)
+            case "*": return self._rng.choice(string.ascii_letters + string.digits)
+            case "$": return self._rng.choice(string.ascii_lowercase + string.digits)
+            case "%": return self._rng.choice(string.ascii_uppercase + string.digits)
             case _: return symbol
 
     def generate_username(self, row_data: dict | None = None) -> str:
         name_mix = self.person["first_name"]["female"] + \
             self.person["first_name"]["male"]
-        pattern = random.choice(self.format["username"])
+        pattern = self._rng.choice(self.format["username"])
 
         first_name = (row_data or {}).get(
-            "first_name") or random.choice(name_mix)
+            "first_name") or self._rng.choice(name_mix)
         last_name = (row_data or {}).get(
-            "last_name") or random.choice(self.person["last_name"])
+            "last_name") or self._rng.choice(self.person["last_name"])
         full_name = (row_data or {}).get("full_name")
 
         if full_name:
@@ -124,7 +131,7 @@ class BaseProvider(ABC):
 
     def random_base58(self, length: int) -> str:
         alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
-        return "".join(random.choice(alphabet) for _ in range(length))
+        return "".join(self._rng.choice(alphabet) for _ in range(length))
 
     def encode_base32(self, data: bytes) -> str:
         alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
@@ -136,25 +143,25 @@ class BaseProvider(ABC):
         return "".join(reversed(chars))
 
     def generate_integer(self, min: int = 0, max: int = 1000) -> int:
-        return random.randint(min, max)
+        return self._rng.randint(min, max)
 
     def generate_float(self, min: float = 0.0, max: float = 1000) -> float:
-        return random.uniform(min, max)
+        return self._rng.uniform(min, max)
 
     def get_random_data_by_list(self, d: list | tuple):
-        return random.choice(d)
+        return self._rng.choice(d)
 
     def get_random_choices_by_list(self, d: list | tuple, k: int = 1):
-        return random.choices(d, k=k)
+        return self._rng.choices(d, k=k)
 
     def get_random_object(self):
-        return random.random()
+        return self._rng.random()
 
     def get_random_sample(self, population: list | tuple, k: int = 1):
         """Get random sample of k unique items from population."""
-        return random.sample(population, k=k)
+        return self._rng.sample(population, k=k)
 
     def shuffle_list(self, d: list):
         """Shuffle a list in-place."""
-        random.shuffle(d)
+        self._rng.shuffle(d)
         return d

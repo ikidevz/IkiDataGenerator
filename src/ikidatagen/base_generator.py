@@ -75,9 +75,97 @@ class BaseGenerator:
         ]
     """
 
-    def __init__(self, schema: list[str | dict[str, Any]]):
-        self.schema = [_normalize_entry(e) for e in schema]
+    def __init__(
+        self,
+        schema: list[str | dict[str, Any]],
+        seed: int | None = None,
+    ):
+        raw = [_normalize_entry(e) for e in schema]
+        self.schema = raw
+        import random as _random
+        self._rng = _random.Random(seed)
         self.providers = self._initialize_providers()
+
+    def _reorder_correlated_groups(self, entries: list[dict]) -> list[dict]:
+        return entries
+
+    def _call_provider(self, gen, row, idx):
+        import inspect
+
+        try:
+            sig = inspect.signature(gen)
+            params = sig.parameters
+            kwargs_call = {}
+            if 'row_data' in params:
+                kwargs_call['row_data'] = row
+            if 'row_index' in params:
+                kwargs_call['row_index'] = idx
+            return gen(**kwargs_call)
+        except Exception:
+            try:
+                return gen(row, idx)
+            except TypeError:
+                try:
+                    return gen(row)
+                except TypeError:
+                    return gen()
+
+    def _apply_constraints(self, value, constraints):
+        if not isinstance(constraints, dict):
+            return value
+
+        if "min_length" in constraints and isinstance(value, str) and len(value) < constraints["min_length"]:
+            value = value + ("x" * (constraints["min_length"] - len(value)))
+        if "max_length" in constraints and isinstance(value, str) and len(value) > constraints["max_length"]:
+            value = value[:constraints["max_length"]]
+        if "min_value" in constraints and isinstance(value, (int, float)) and value < constraints["min_value"]:
+            value = constraints["min_value"]
+        if "max_value" in constraints and isinstance(value, (int, float)) and value > constraints["max_value"]:
+            value = constraints["max_value"]
+        if "allowed_values" in constraints and value not in constraints["allowed_values"]:
+            value = constraints["allowed_values"][0]
+        return value
+
+    def _apply_noise(self, value):
+        if not isinstance(value, str) or not value:
+            return value
+        if len(value) <= 1:
+            return value + "!"
+        idx = self._rng.randrange(len(value))
+        op = self._rng.choice(["swap", "repeat", "drop", "insert"])
+        if op == "swap" and len(value) > 1:
+            chars = list(value)
+            j = (idx + 1) % len(chars)
+            chars[idx], chars[j] = chars[j], chars[idx]
+            return "".join(chars)
+        if op == "repeat":
+            return value[:idx] + value[idx] + value[idx:]
+        if op == "drop":
+            return value[:idx] + value[idx + 1:]
+        return value[:idx] + self._rng.choice("abcdefghijklmnopqrstuvwxyz") + value[idx:]
+
+    def _resolve_value(self, provider, row, idx, options):
+        choices = options.get("choices")
+        if choices:
+            weights = options.get("weights")
+            if weights is None:
+                value = self._rng.choice(list(choices))
+            else:
+                if len(weights) != len(choices):
+                    raise ValueError(
+                        "[Schema Error] 'weights' must match the length of 'choices'.")
+                value = self._rng.choices(
+                    list(choices), weights=weights, k=1)[0]
+        else:
+            value = self._call_provider(provider.generate_non_blank, row, idx)
+
+        if value is None:
+            return None
+        if options.get("mask"):
+            return "[REDACTED]"
+        if options.get("noise"):
+            value = self._apply_noise(value)
+        return self._apply_constraints(value, options.get("constraints", {}))
 
     def generate_many(self, n: int) -> list[dict]:
         """Generate n records.  Returns a list of dicts keyed by output label."""
@@ -86,6 +174,7 @@ class BaseGenerator:
         for col_key, data in self.providers.items():
             label = data["label"]
             provider = data["provider"]
+            options = data.get("options", {})
 
             pct = (getattr(provider, "blank_percentage", 0.0) or 0.0) / 100
             if not 0 <= pct <= 1:
@@ -94,16 +183,39 @@ class BaseGenerator:
                     "Must be between 0 and 100."
                 )
             num_blanks = round(n * pct)
-            blank_set = set(random.sample(range(n), num_blanks)
+            blank_set = set(self._rng.sample(range(n), num_blanks)
                             ) if num_blanks > 0 else set()
+
+            unique = bool(options.get("unique"))
+            max_tries = int(options.get("max_unique_tries", 1000))
+            seen = set() if unique else None
 
             for i in range(n):
                 if i in blank_set:
                     rows[i][label] = None
                     continue
 
-                value = provider.generate_non_blank(row_data=rows[i])
-                rows[i][label] = value
+                if not unique:
+                    value = self._resolve_value(provider, rows[i], i, options)
+                    rows[i][label] = value
+                    continue
+
+                val = None
+                for attempt in range(max_tries):
+                    candidate = self._resolve_value(
+                        provider, rows[i], i, options)
+                    if candidate is None:
+                        val = None
+                        break
+                    if candidate not in seen:
+                        val = candidate
+                        seen.add(candidate)
+                        break
+                if val is None:
+                    raise ValueError(
+                        f"[Schema Error] Unable to generate unique value for '{label}' after {max_tries} tries."
+                    )
+                rows[i][label] = val
 
         return rows
 
@@ -121,10 +233,15 @@ class BaseGenerator:
             if class_name == "TemplateProvider":
                 options["schema_labels"] = schema_labels
 
+            provider_options = dict(options)
+            for key in ("unique", "max_unique_tries", "choices", "weights", "mask", "noise", "constraints"):
+                provider_options.pop(key, None)
+
             provider_instance = ProviderFactory.create(
                 key_label=key_label,
                 group=group,
-                **options,
+                rng=self._rng,
+                **provider_options,
             )
 
             if label in providers:
@@ -137,6 +254,59 @@ class BaseGenerator:
                 "provider":  provider_instance,
                 "label":     label,
                 "key_label": key_label,
+                "options":   options,
             }
 
+        # Collision detection: label must not equal another entry's key_label
+        labels = set(providers.keys())
+        key_labels = {v["key_label"] for v in providers.values()}
+        for lab in labels:
+            if lab in key_labels and providers[lab]["key_label"] != lab:
+                raise ValueError(
+                    f"[Schema Error] Output label '{lab}' collides with a provider key_label. "
+                    "Rename the label or the key_label to avoid collisions."
+                )
+
         return providers
+
+    def stream(self, n: int, batch_size: int = 1000):
+        """Generate rows as a stream yielding lists of dicts of at most batch_size."""
+        import inspect
+
+        def _call_provider(gen, row, idx):
+            try:
+                sig = inspect.signature(gen)
+                params = sig.parameters
+                kwargs_call = {}
+                if 'row_data' in params:
+                    kwargs_call['row_data'] = row
+                if 'row_index' in params:
+                    kwargs_call['row_index'] = idx
+                return gen(**kwargs_call)
+            except Exception:
+                try:
+                    return gen(row, idx)
+                except TypeError:
+                    try:
+                        return gen(row)
+                    except TypeError:
+                        return gen()
+
+        batch: list[dict] = []
+        for i in range(n):
+            row = {}
+            for col_key, data in self.providers.items():
+                label = data["label"]
+                provider = data["provider"]
+                options = data.get("options", {})
+                pct = (getattr(provider, "blank_percentage", 0.0) or 0.0) / 100
+                if self._rng.random() < pct:
+                    row[label] = None
+                    continue
+                row[label] = self._resolve_value(provider, row, i, options)
+            batch.append(row)
+            if len(batch) >= batch_size:
+                yield batch
+                batch = []
+        if batch:
+            yield batch

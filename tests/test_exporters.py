@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import pytest
 
 from ikidatagen.core import IkiDataGenerator
@@ -77,6 +78,47 @@ def test_exporter_optional_parquet_duckdb(tmp_path):
 
     Exporter.to_duckdb(data, str(duckdb_file), table_name="people")
     assert duckdb_file.exists()
+
+
+def test_exporter_to_ndjson_html_pickle(tmp_path):
+    data = [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]
+    ndjson_file = tmp_path / "data.ndjson"
+    html_file = tmp_path / "data.html"
+    pickle_file = tmp_path / "data.pkl"
+
+    Exporter.to_ndjson(data, str(ndjson_file))
+    Exporter.to_html(data, str(html_file))
+    Exporter.to_pickle(data, str(pickle_file))
+
+    assert ndjson_file.exists()
+    assert html_file.exists()
+    assert pickle_file.exists()
+    assert ndjson_file.read_text(encoding="utf-8").count("\n") == 2
+
+
+def test_exporter_stream_to_ndjson(tmp_path):
+    data = [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]
+    ndjson_file = tmp_path / "streamed.ndjson"
+
+    Exporter.stream_to_ndjson([data], str(ndjson_file))
+
+    assert ndjson_file.exists()
+    content = ndjson_file.read_text(encoding="utf-8")
+    assert content.count("\n") == 2
+    assert '{"id": 1, "name": "Alice"}' in content
+
+
+def test_exporter_to_dataframe(tmp_path):
+    data = [{"id": 1, "name": "Alice"}]
+    df = Exporter.to_dataframe(data, engine="pandas")
+    assert df.iloc[0]["name"] == "Alice"
+
+
+def test_exporter_to_sqlalchemy(tmp_path):
+    pytest.importorskip("sqlalchemy")
+    data = [{"id": 1, "name": "Alice"}]
+    conn_str = "sqlite:///:memory:"
+    Exporter.to_sqlalchemy(data, conn_str, table_name="people")
 
 
 def test_exporter_neutralizes_formula_injection_payloads(tmp_path):

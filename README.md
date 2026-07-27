@@ -24,15 +24,15 @@ It's built for developers who need:
 
 ### ✅ You Get
 
-| Benefit                            | What It Means                                                                                   |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------- |
-| **700+ Fields**                    | First name, email, credit card, medical codes, stock prices, cryptocurrencies, ML metrics, etc. |
-| **22 Categories**                  | Personal, Finance, Commerce, Healthcare, Location, Education, Legal, AI/ML, and more            |
-| **Easy Schema**                    | Simple string shortcuts or full control with dicts                                              |
-| **Flexible Export**                | CSV, JSON, SQL, Parquet, DuckDB, Excel, XML, TSV, Firebase, more                                |
-| **Zero Dependencies on Real Data** | No need to anonymize or worry about PII                                                         |
-| **Blazing Fast**                   | Generates thousands of records instantly                                                        |
-| **Extensible**                     | Add custom providers for domain-specific fields                                                 |
+| Benefit                            | What It Means                                                                                                                      |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **700+ Fields**                    | First name, email, credit card, medical codes, stock prices, cryptocurrencies, ML metrics, etc.                                    |
+| **22 Categories**                  | Personal, Finance, Commerce, Healthcare, Location, Education, Legal, AI/ML, Developer Tools, Blockchain, Telecom, Travel, and more |
+| **Easy Schema**                    | Simple string shortcuts or full control with dicts                                                                                 |
+| **Flexible Export**                | CSV, JSON, SQL, Parquet, DuckDB, Excel, XML, TSV, Firebase, more                                                                   |
+| **Zero Dependencies on Real Data** | No need to anonymize or worry about PII                                                                                            |
+| **Blazing Fast**                   | Generates thousands of records instantly                                                                                           |
+| **Extensible**                     | Add custom providers for domain-specific fields                                                                                    |
 
 ### ❌ You Don't Get
 
@@ -120,6 +120,44 @@ IkiDataGenerator(schema).many(500).export("users", formats=["csv", "json"])
 ```
 
 **Result:** `output/users.csv` and `output/users.json` with 500 complete user records, ready to use.
+
+---
+
+## Advanced Features
+
+Iki Data Generator includes a broad set of capabilities for realistic, production-style test data pipelines:
+
+- Reproducible generation with `seed`
+- Per-field uniqueness with retry handling and clear exhaustion errors
+- Password hashing with bcrypt by default, plus `fast=True` for SHA-256-based hashing
+- Locale-aware generation for region-specific names and formats is planned for future implementation
+- Stable row numbering for fields like `row_number` so generated IDs remain consistent across repeated runs
+- Streaming and batched generation via `stream()` and `export(..., stream=True)` for large datasets
+- Strict schema option validation with `options_strict=True` when you want unknown options to raise errors
+- Weighted categorical sampling through `choices` and `weights`
+- Masking and noisy-data injection for privacy-safe or more realistic records
+- Event-stream generation with timestamps and sequence numbers
+- Async generation through `many_async()`
+- Programmatic schema construction with `SchemaBuilder`
+- Schema creation from existing data via `Dataset.from_schema()` and `SchemaBuilder.from_dataframe()`
+- Recipe manifest export through `Dataset.export_recipe()`
+
+Example:
+
+```python
+from ikidatagen import IkiDataGenerator, SchemaBuilder
+
+builder = SchemaBuilder()
+builder.add_field("first_name")
+builder.add_field("email_address", options={"unique": True})
+builder.add_field("password_hash", options={"fast": True})
+schema = builder.build()
+
+gen = IkiDataGenerator(schema, seed=42)
+rows = gen.many(10).data
+```
+
+These features help you build deterministic fixtures, locale-aware mock data, large streamed exports, and more structured datasets without switching tools.
 
 ---
 
@@ -556,6 +594,8 @@ Iki Data Generator organizes 700+ fields into 22 categories. Here's a quick over
 
 This section documents **all 700+ fields** organized by category, with detailed parameter information for each provider.
 
+Iki Data Generator maps providers into 22 canonical registry groups defined by `KEY_LABEL_REGISTRY`. Some user-facing headings use friendly labels while preserving the underlying category groups such as `developer_tools`, `blockchain`, `telecom`, `travel`, and `infrastructure`.
+
 ### 🧑 **Personal Category** (65+ providers)
 
 Generate names, identity documents, demographics, and personal information.
@@ -663,7 +703,7 @@ Generate names, identity documents, demographics, and personal information.
 
 ---
 
-### 💰 **Commerce Category** (65+ providers)
+### 💰 **Commerce Category** (62 providers)
 
 Generate e-commerce, retail, pricing, and product data.
 
@@ -769,7 +809,7 @@ Generate e-commerce, retail, pricing, and product data.
 
 ---
 
-### 💻 **IT/Technology Category** (100+ providers)
+### 💻 **Developer Tools Category** (104 providers)
 
 Generate programming, networking, software, and tech infrastructure data.
 
@@ -896,7 +936,7 @@ Generate programming, networking, software, and tech infrastructure data.
 
 ---
 
-### 🏥 **Healthcare Category** (60+ providers)
+### 🏥 **Healthcare Category** (67 providers)
 
 Generate medical, pharmaceutical, hospital, and health insurance data.
 
@@ -1029,7 +1069,7 @@ Advanced data generation with templates, regex, lambdas, and custom logic.
 
 ---
 
-## 🤖 **AI/ML Category** (30+ providers)
+## 🤖 **AI/ML Category** (22 providers)
 
 Generate machine learning, model metrics, and AI infrastructure data.
 
@@ -1060,7 +1100,7 @@ Generate machine learning, model metrics, and AI infrastructure data.
 
 ---
 
-## 🌍 **Location Category** (35+ providers)
+## 🌍 **Location Category** (36 providers)
 
 Generate geographic, address, and location data.
 
@@ -1170,7 +1210,22 @@ Generate gaming, entertainment, and player data.
 
 ---
 
-### 🎬 **Entertainment Category** (10+ providers)
+### � **Sports Category** (6 providers)
+
+Generate sports organizations, teams, and athlete data.
+
+| Provider         | Description        | Parameters         | Example                                        |
+| ---------------- | ------------------ | ------------------ | ---------------------------------------------- |
+| `athlete_name`   | Athlete name       | `blank_percentage` | `"Serena Williams"`, `"Lionel Messi"`          |
+| `equipment_type` | Equipment category | `blank_percentage` | `"Basketball"`, `"Tennis Racket"`              |
+| `league`         | League name        | `blank_percentage` | `"NBA"`, `"Premier League"`                    |
+| `olympic_sport`  | Olympic sport      | `blank_percentage` | `"Gymnastics"`, `"Swimming"`                   |
+| `sport`          | Sport type         | `blank_percentage` | `"Soccer"`, `"Basketball"`                     |
+| `stadium_name`   | Stadium name       | `blank_percentage` | `"Wembley Stadium"`, `"Madison Square Garden"` |
+
+---
+
+### �🎬 **Entertainment Category** (36 providers)
 
 Generate movie, book, music, and media data.
 
@@ -1189,7 +1244,7 @@ Generate movie, book, music, and media data.
 
 ---
 
-### 💱 **Cryptocurrency Category** (7 providers)
+### 💱 **Blockchain Category** (16 providers)
 
 Generate blockchain and cryptocurrency data.
 
@@ -1205,7 +1260,7 @@ Generate blockchain and cryptocurrency data.
 
 ---
 
-### ⚖️ **Legal Category** (17 providers)
+### ⚖️ **Legal Category** (18 providers)
 
 Generate legal and compliance data.
 
@@ -1232,7 +1287,7 @@ Generate legal and compliance data.
 
 ---
 
-### 🌿 **Nature Category** (10+ providers)
+### 🌿 **Nature Category** (37 providers)
 
 Generate natural world and environmental data.
 
@@ -1252,7 +1307,7 @@ Generate natural world and environmental data.
 
 ---
 
-### 🔷 **Political Category** (5+ providers)
+### 🔷 **Political Category** (20 providers)
 
 Generate political and government data.
 
@@ -1277,7 +1332,7 @@ Generate music and audio data.
 
 ---
 
-### 🌐 **Marketing/Media Category** (7+ providers)
+### 🌐 **Marketing/Media Category** (43 providers)
 
 Generate marketing, analytics, and content data.
 
@@ -1292,7 +1347,7 @@ Generate marketing, analytics, and content data.
 
 ---
 
-### 🏦 **Finance Category** (40+ providers)
+### 🏦 **Finance Category** (41 providers)
 
 Generate banking, investment, and financial data.
 
@@ -1340,7 +1395,7 @@ Generate banking, investment, and financial data.
 
 ---
 
-### 📱 **Communication Category** (22 providers)
+### 📱 **Telecom Category** (23 providers)
 
 Generate mobile, telecom, and network communication data.
 
@@ -1372,7 +1427,7 @@ Generate mobile, telecom, and network communication data.
 
 ---
 
-### ✨ **Basic/Utility Category** (50+ providers)
+### ✨ **Basic/Utility Category** (47 providers)
 
 Generate basic utilities, random data, and helper fields.
 
@@ -2052,8 +2107,16 @@ python examples/504_api_response_mocking.py  # Mock API responses
 #### Complete Feature Showcase
 
 ```bash
-python examples/999_showcase_all_features.py # All 12 features in one!
+python examples/999_showcase_all_features.py # One merged file with 14 showcase examples
 ```
+
+Use `examples/999_showcase_all_features.py` when you want a single script that demonstrates:
+
+- basic schema generation
+- custom labels, templates, regex, blanks, and numeric ranges
+- streamed export for large datasets
+- programmatic schema construction with `SchemaBuilder`
+- async generation via `many_async()`
 
 ### Run All Examples at Once
 

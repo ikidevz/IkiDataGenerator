@@ -71,17 +71,55 @@ class DatasetManager:
         if cache_key in cls._cache:
             return cls._cache[cache_key]
 
-        data = cls.load(name)
+        class _LazyKey:
+            def __init__(self, name: str, key: str, manager: type[DatasetManager]):
+                self.name = name
+                self.key = key
+                self._manager = manager
+                self._val = None
 
-        if key not in data:
-            raise KeyError(
-                f"[DatasetManager] Key '{key}' not found in dataset '{name}'.\n"
-                f"  → Available keys: {', '.join(str(k) for k in data.keys())}"
-            )
+            def _load(self):
+                if self._val is None:
+                    data = self._manager.load(self.name)
+                    if self.key not in data:
+                        raise KeyError(
+                            f"[DatasetManager] Key '{self.key}' not found in dataset '{self.name}'.\n"
+                            f"  → Available keys: {', '.join(str(k) for k in data.keys())}"
+                        )
+                    self._val = tuple(data[self.key])
+                return self._val
 
-        result = tuple(data[key])
-        cls._cache[cache_key] = result
-        return result
+            def __iter__(self):
+                return iter(self._load())
+
+            def __len__(self):
+                return len(self._load())
+
+            def __getitem__(self, idx):
+                return self._load()[idx]
+
+            def __repr__(self):
+                return f"LazyDatasetKey({self.name!r}, {self.key!r})"
+
+            def __add__(self, other):
+                if isinstance(other, _LazyKey):
+                    return tuple(self._load()) + tuple(other._load())
+                try:
+                    return tuple(self._load()) + tuple(other)
+                except Exception:
+                    return NotImplemented
+
+            def __radd__(self, other):
+                if isinstance(other, _LazyKey):
+                    return tuple(other._load()) + tuple(self._load())
+                try:
+                    return tuple(other) + tuple(self._load())
+                except Exception:
+                    return NotImplemented
+
+        lazy = _LazyKey(name, key, cls)
+        cls._cache[cache_key] = lazy
+        return lazy
 
     @staticmethod
     def _load_file(path: Path) -> list | dict:

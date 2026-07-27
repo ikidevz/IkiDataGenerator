@@ -6,6 +6,8 @@ class RowNumberProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage, **kwargs)
         self.counter = 0
 
-    def generate_non_blank(self, row_data=None):
+    def generate_non_blank(self, row_data=None, row_index: int | None = None):
+        if row_index is not None:
+            return row_index + 1
         self.counter += 1
         return self.counter

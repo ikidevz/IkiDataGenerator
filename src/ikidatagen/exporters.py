@@ -1,14 +1,11 @@
 from pathlib import Path
-from openpyxl import Workbook
-
 import xml.etree.ElementTree as ET
-import pandas as pd
-import pyarrow as pa
-
 import csv
 import json
-import duckdb
+import pickle
 import re
+
+# Heavy optional dependencies (pandas, pyarrow, duckdb, openpyxl) are imported lazily
 
 
 _IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
@@ -49,10 +46,9 @@ class Exporter:
         with open(file_path, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=data[0].keys())
             writer.writeheader()
-            writer.writerows([
-                {k: _neutralize_formula(v) for k, v in row.items()}
-                for row in data
-            ])
+            for row in data:
+                writer.writerow({k: _neutralize_formula(v)
+                                for k, v in row.items()})
         print(f"CSV saved to: {file_path}")
 
     @staticmethod
@@ -77,6 +73,113 @@ class Exporter:
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
         print(f"JSON saved to: {file_path}")
+
+    @staticmethod
+    def to_ndjson(data: list[dict], file_path: str):
+        Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+        with open(file_path, "w", encoding="utf-8") as f:
+            for row in data:
+                json.dump(row, f)
+                f.write("\n")
+        print(f"NDJSON saved to: {file_path}")
+
+    @staticmethod
+    def to_html(data: list[dict], file_path: str, title: str = "Data"):
+        if not data:
+            raise ValueError("No data to export.")
+        Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+        columns = list(data[0].keys())
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write("<html><head><meta charset=\"utf-8\"><title>")
+            f.write(title)
+            f.write("</title></head><body>\n")
+            f.write("<table border=\"1\">\n<tr>")
+            for col in columns:
+                f.write(f"<th>{col}</th>")
+            f.write("</tr>\n")
+            for row in data:
+                f.write("<tr>")
+                for col in columns:
+                    value = row.get(col, "")
+                    f.write(f"<td>{_neutralize_formula(value)}</td>")
+                f.write("</tr>\n")
+            f.write("</table>\n</body></html>")
+        print(f"HTML saved to: {file_path}")
+
+    @staticmethod
+    def to_pickle(data: list[dict], file_path: str):
+        Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+        with open(file_path, "wb") as f:
+            pickle.dump(data, f)
+        print(f"Pickle saved to: {file_path}")
+
+    @staticmethod
+    def to_dataframe(data: list[dict], engine: str = "pandas"):
+        if engine == "pandas":
+            try:
+                import pandas as pd
+            except Exception as e:
+                raise ImportError(
+                    "DataFrame export requires pandas. Install pandas and retry."
+                ) from e
+            return pd.DataFrame(data)
+        if engine == "polars":
+            try:
+                import polars as pl
+            except Exception as e:
+                raise ImportError(
+                    "DataFrame export requires polars. Install polars and retry."
+                ) from e
+            return pl.DataFrame(data)
+        raise ValueError(f"Unknown dataframe engine: {engine}")
+
+    @staticmethod
+    def stream_to_csv(batch_iter, file_path: str):
+        """Write batches (iterable of row lists) to CSV incrementally."""
+        first_batch = None
+        it = iter(batch_iter)
+        try:
+            first_batch = next(it)
+        except StopIteration:
+            raise ValueError("No data to export.")
+
+        Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+        with open(file_path, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=first_batch[0].keys())
+            writer.writeheader()
+            for row in first_batch:
+                writer.writerow({k: _neutralize_formula(v)
+                                for k, v in row.items()})
+            for batch in it:
+                for row in batch:
+                    writer.writerow({k: _neutralize_formula(v)
+                                    for k, v in row.items()})
+        print(f"CSV saved to: {file_path}")
+
+    @staticmethod
+    def stream_to_json(batch_iter, file_path: str):
+        Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+        first = True
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write('[')
+            for batch in batch_iter:
+                for row in batch:
+                    if not first:
+                        f.write(',\n')
+                    json.dump(row, f)
+                    first = False
+            f.write(']')
+        print(f"JSON saved to: {file_path}")
+
+    @staticmethod
+    def stream_to_ndjson(batch_iter, file_path: str):
+        Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+        with open(file_path, 'w', encoding='utf-8') as f:
+            for batch in batch_iter:
+                for row in batch:
+                    json.dump(row, f)
+                    f.write("\n")
+        print(f"NDJSON saved to: {file_path}")
 
     @staticmethod
     def to_sql(data: list[dict], table_name: str, file_path: str, create_table: bool):
@@ -189,24 +292,6 @@ class Exporter:
         print(f"Firebase JSON saved to: {file_path}")
 
     @staticmethod
-    def to_excel(data: list[dict], file_path: str, sheet_name: str = "Sheet1"):
-        """Export data to Excel workbook."""
-        if not data:
-            raise ValueError("No data to export.")
-        Path(file_path).parent.mkdir(parents=True, exist_ok=True)
-
-        wb = Workbook()
-        ws = wb.active
-        ws.title = sheet_name
-
-        headers = list(data[0].keys())
-        ws.append(headers)
-        for row in data:
-            ws.append([_neutralize_formula(row.get(h)) for h in headers])
-        wb.save(file_path)
-        print(f"Excel saved to: {file_path}")
-
-    @staticmethod
     def to_xml(data: list[dict], file_path: str, root_element: str = "root", record_element: str = "record"):
         """Export data to generic XML with custom root/record element names."""
         if not data:
@@ -247,6 +332,11 @@ class Exporter:
         if not data:
             raise ValueError("No data to export.")
         Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+        try:
+            import pandas as pd
+        except Exception as e:
+            raise ImportError(
+                "Parquet export requires pandas and pyarrow. Install both packages and retry.") from e
         df = pd.DataFrame(data)
         df.to_parquet(file_path, index=False)
         print(f"Parquet file saved to: {file_path}")
@@ -256,7 +346,12 @@ class Exporter:
         if not data:
             raise ValueError("No data to export.")
         Path(file_path).parent.mkdir(parents=True, exist_ok=True)
-
+        try:
+            import pandas as pd
+            import duckdb
+        except Exception as e:
+            raise ImportError(
+                "DuckDB export requires pandas and duckdb. Install both packages and retry.") from e
         df = pd.DataFrame(data)
         table_name = _safe_identifier(table_name)
         con = duckdb.connect(file_path)
@@ -265,3 +360,43 @@ class Exporter:
 
         con.close()
         print(f"DuckDB saved at: {file_path} (table: {table_name})")
+
+    @staticmethod
+    def to_sqlalchemy(data: list[dict], connection_string: str, table_name: str = "data", if_exists: str = "replace"):
+        if not data:
+            raise ValueError("No data to export.")
+        try:
+            import pandas as pd
+            from sqlalchemy import create_engine
+        except Exception as e:
+            raise ImportError(
+                "SQLAlchemy export requires pandas and SQLAlchemy. Install both packages and retry."
+            ) from e
+        df = pd.DataFrame(data)
+        engine = create_engine(connection_string)
+        df.to_sql(table_name, engine, if_exists=if_exists, index=False)
+        engine.dispose()
+        print(
+            f"SQLAlchemy export complete to {connection_string} table {table_name}")
+
+    @staticmethod
+    def to_excel(data: list[dict], file_path: str, sheet_name: str = "Sheet1"):
+        try:
+            from openpyxl import Workbook
+        except Exception as e:
+            raise ImportError(
+                "Excel export requires openpyxl. Install openpyxl and retry.") from e
+        if not data:
+            raise ValueError("No data to export.")
+        Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = sheet_name
+
+        headers = list(data[0].keys())
+        ws.append(headers)
+        for row in data:
+            ws.append([_neutralize_formula(row.get(h)) for h in headers])
+        wb.save(file_path)
+        print(f"Excel saved to: {file_path}")

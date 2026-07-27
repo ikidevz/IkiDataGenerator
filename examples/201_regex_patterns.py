@@ -15,35 +15,35 @@ schema = [
         "key_label": "regular_expression",
         "label": "Order ID",
         "options": {
-            "pattern": "ORD-[A-Z]{3}-[0-9]{6}"
+            "format": "ORD-[A-Z]{3}-[0-9]{6}"
         }
     },
     {
         "key_label": "regular_expression",
         "label": "Serial Number",
         "options": {
-            "pattern": "SN[0-9]{10}"
+            "format": "SN[0-9]{10}"
         }
     },
     {
         "key_label": "regular_expression",
         "label": "Tracking Code",
         "options": {
-            "pattern": "[A-Z]{2}[0-9]{4}[A-Z]{2}"
+            "format": "[A-Z]{2}[0-9]{4}[A-Z]{2}"
         }
     },
     {
         "key_label": "regular_expression",
         "label": "Product Code",
         "options": {
-            "pattern": "P-[0-9]{3}-[A-Z]{4}-[0-9]{2}"
+            "format": "P-[0-9]{3}-[A-Z]{4}-[0-9]{2}"
         }
     },
     {
         "key_label": "regular_expression",
         "label": "Reference",
         "options": {
-            "pattern": "REF[0-9]{8}"
+            "format": "REF[0-9]{8}"
         }
     },
 ]

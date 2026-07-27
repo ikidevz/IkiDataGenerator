@@ -1,7 +1,7 @@
 """
-403_large_dataset.py - Generating Large Datasets (1M+ Records)
+403_large_dataset.py - Generating Large Datasets (100k+ Records)
 
-Tips for generating and exporting massive datasets efficiently.
+Tips for generating and exporting large datasets efficiently.
 Use Parquet format for best performance and file size.
 """
 
@@ -32,23 +32,22 @@ schema = [
 ]
 
 print("[CHART] Generating large dataset...")
-print("   This will create 1,000,000 records (may take a minute)")
+print("   This will create 100,000 records (may take a minute)")
 
-
-IkiDataGenerator(schema).many(1000000).export(
+IkiDataGenerator(schema).many(100000).export(
     "large_dataset",
     formats=["parquet"]  # Parquet is most efficient for large datasets
 )
 
-print("[OK] Successfully generated 1,000,000 records!")
+print("[OK] Successfully generated 100,000 records!")
 print("   [FOLDER] Output: output/large_dataset.parquet")
 print("   Tip: Use Parquet for big data - much faster than CSV!")
 
-# Advanced: Generate in chunks if memory is limited
+# Advanced: Generate in smaller chunks if memory is limited
 print("\n Alternative: Generate in smaller chunks")
-for i in range(10):
-    print(f"   Generating chunk {i+1}/10 (100k records)...")
-    IkiDataGenerator(schema).many(100000).export(
+for i in range(5):
+    print(f"   Generating chunk {i+1}/5 (20k records)...")
+    IkiDataGenerator(schema).many(20000).export(
         f"large_dataset_chunk_{i+1}",
         formats=["parquet"]
     )
