@@ -44,17 +44,10 @@ schema = [
     },
 
     {
-        "label": "temp_ip_address",
-        "key_label": "customer_list",
-        "options": {"custom_format": "QWE,ASD,ZXC"}
+        "label": "custom_list",
+        "key_label": "custom_list",
+        "options": {"values": "QWE,ASD,ZXC"}
     },
-    {
-        "label": "temp_ip_address",
-        "key_label": "customer_list",
-        "options": {"values": "{{id}} {{IP Address}}"}
-    },
-
-
     {
         'label': 'order_date',
         'key_label': 'datetime',

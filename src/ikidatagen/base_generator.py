@@ -144,8 +144,28 @@ class BaseGenerator:
             return value[:idx] + value[idx + 1:]
         return value[:idx] + self._rng.choice("abcdefghijklmnopqrstuvwxyz") + value[idx:]
 
-    def _resolve_value(self, provider, row, idx, options):
+    def _build_row_context(self, row, key_label: str | None, label: str | None) -> dict[str, Any]:
+        row_context: dict[str, Any] = {}
+        for entry in self.schema:
+            entry_label = entry["label"]
+            entry_key_label = entry["key_label"]
+            if entry_label not in row and entry_key_label not in row:
+                continue
+
+            value = row.get(entry_label)
+            if value is None and entry_key_label in row:
+                value = row[entry_key_label]
+
+            if key_label == "template" or label == "template":
+                row_context[entry_label] = value
+            else:
+                row_context[entry_key_label] = value
+
+        return row_context
+
+    def _resolve_value(self, provider, row, idx, options, key_label: str | None = None, label: str | None = None):
         choices = options.get("choices")
+        row_context = self._build_row_context(row, key_label, label)
         if choices:
             weights = options.get("weights")
             if weights is None:
@@ -157,7 +177,8 @@ class BaseGenerator:
                 value = self._rng.choices(
                     list(choices), weights=weights, k=1)[0]
         else:
-            value = self._call_provider(provider.generate_non_blank, row, idx)
+            value = self._call_provider(
+                provider.generate_non_blank, row_context, idx)
 
         if value is None:
             return None
@@ -173,6 +194,7 @@ class BaseGenerator:
 
         for col_key, data in self.providers.items():
             label = data["label"]
+            key_label = data["key_label"]
             provider = data["provider"]
             options = data.get("options", {})
 
@@ -196,14 +218,15 @@ class BaseGenerator:
                     continue
 
                 if not unique:
-                    value = self._resolve_value(provider, rows[i], i, options)
+                    value = self._resolve_value(
+                        provider, rows[i], i, options, key_label=key_label, label=label)
                     rows[i][label] = value
                     continue
 
                 val = None
                 for attempt in range(max_tries):
                     candidate = self._resolve_value(
-                        provider, rows[i], i, options)
+                        provider, rows[i], i, options, key_label=key_label, label=label)
                     if candidate is None:
                         val = None
                         break
@@ -303,7 +326,8 @@ class BaseGenerator:
                 if self._rng.random() < pct:
                     row[label] = None
                     continue
-                row[label] = self._resolve_value(provider, row, i, options)
+                row[label] = self._resolve_value(
+                    provider, row, i, options, key_label=data["key_label"], label=label)
             batch.append(row)
             if len(batch) >= batch_size:
                 yield batch

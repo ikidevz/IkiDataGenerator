@@ -199,6 +199,45 @@ class TestFieldOrdering:
             assert "city" in row
 
 
+class TestRowContext:
+    """Test that provider row_data uses key labels while templates keep labels."""
+
+    def test_providers_receive_key_label_context(self):
+        """Username provider should resolve first_name and last_name from key-label context."""
+        schema = [
+            {"label": "First Name", "key_label": "first_name"},
+            {"label": "Last Name", "key_label": "last_name"},
+            {"label": "Username", "key_label": "username"},
+        ]
+
+        gen = IkiDataGenerator(schema, seed=42)
+        data = gen.many(5).data
+
+        for row in data:
+            first_name = row["First Name"].lower()
+            last_name = row["Last Name"].lower()
+            username = row["Username"].lower()
+            assert first_name in username
+            assert last_name in username
+
+    def test_template_provider_still_uses_output_labels(self):
+        """Template provider should continue resolving placeholders from output labels."""
+        schema = [
+            {"label": "First Name", "key_label": "first_name"},
+            {"label": "Last Name", "key_label": "last_name"},
+            {
+                "label": "Full Name",
+                "key_label": "template",
+                "options": {"template": "{{First Name}} {{Last Name}}"},
+            },
+        ]
+
+        gen = IkiDataGenerator(schema, seed=42)
+        row = gen.many(1).data[0]
+
+        assert row["Full Name"] == f"{row['First Name']} {row['Last Name']}"
+
+
 class TestRowIndexing:
     """Test that row_index is properly passed to providers."""
 
