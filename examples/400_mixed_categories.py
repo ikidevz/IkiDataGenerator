@@ -22,6 +22,11 @@ schema = [
     {
         "key_label": "datetime",
         "label": "DOB",
+        "options": {
+            "from_date": "2020-01-01",
+            "to_date": "2024-12-31",
+            "date_format": "YYYY-MM-DD",
+        },
     },
 
     # Location data

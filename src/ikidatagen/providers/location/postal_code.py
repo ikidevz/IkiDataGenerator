@@ -99,10 +99,12 @@ class PostalCodeProvider(BaseProvider):
             elif normalized in {'US', 'USA', 'U.S.', 'UNITED STATES', 'UNITED STATES OF AMERICA'}:
                 country_code = 'US'
             else:
-                country_row = self.get_dataset_lookup(
-                    'countries', 'name').get(country)
-                if country_row:
-                    country_code = country_row.get('iso2')
+                country_code = self.resolve_dataset_field(
+                    row_data,
+                    'iso2',
+                    dataset='countries',
+                    by=(('country', 'name'),),
+                )
 
         if country_code not in self.country_formats:
             country_code = self.get_random_data_by_list(

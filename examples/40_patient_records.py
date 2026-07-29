@@ -13,6 +13,11 @@ schema = [
     {
         "key_label": "datetime",
         "label": "DOB",
+        "options": {
+            "from_date": "January 01, 1980",
+            "to_date": "December 31, 2005",
+            "date_format": "ISO 8601 (UTC)",
+        },
     },
     "gender_binary",
     {

@@ -21,15 +21,23 @@ class NoiseSourceProvider(BaseProvider):
                     return category
 
     def generate_non_blank(self, row_data=None):
+        row_data = row_data or {}
+        noise_level = row_data.get('noise_level')
 
-        noise_level = row_data.get('noise_level') if row_data else None
-        noise_category = row_data.get('noise_category') if row_data else None
+        if noise_level is not None:
+            resolved_level = self._determine_range(noise_level)
+            if resolved_level:
+                return self.resolve_dataset_field(
+                    {**row_data, 'noise_level': resolved_level},
+                    'Source',
+                    dataset='noise',
+                    by=(('noise_level', 'Noise_Level_DB'),
+                        ('noise_category', 'Category')),
+                )
 
-        if noise_level:
-            return self.get_dataset_lookup('noise', 'Noise_Level_DB').get(
-                self._determine_range(noise_level)).get('Source')
-
-        if noise_category:
-            return self.get_dataset_lookup('noise', 'Noise_Level_DB').get(noise_category).get('Category')
-
-        return self.get_row_data_from_datasets('noise', 'Source')
+        return self.resolve_dataset_field(
+            row_data,
+            'Source',
+            dataset='noise',
+            by=(('noise_category', 'Category'),),
+        )

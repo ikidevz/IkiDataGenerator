@@ -16,6 +16,11 @@ student_schema = [
     {
         "key_label": "datetime",
         "label": "DOB",
+        "options": {
+            "from_date": "1980-01-01",
+            "to_date": "2005-12-31",
+            "date_format": "SQL datetime",
+        },
     },
     "gender_binary",
     "email_address",

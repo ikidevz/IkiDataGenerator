@@ -8,6 +8,7 @@ from ..payload import PAYLOAD
 
 class BaseProvider(ABC):
     _datasets: dict | None = None
+    _lookup_cache: dict[tuple[str, str], dict] = {}
 
     @classmethod
     def _get_datasets(cls) -> dict:
@@ -85,8 +86,32 @@ class BaseProvider(ABC):
         return {name: DatasetManager.load(name) for name in self.datasets}
 
     def get_dataset_lookup(self, dataset: str, key_col: str) -> dict:
-        rows = self.import_datasets()[dataset]
-        return {row[key_col]: row for row in rows if row.get(key_col)}
+        """Row-by-key_col index for `dataset`, built once and cached class-wide."""
+        cache_key = (dataset, key_col)
+        if cache_key not in BaseProvider._lookup_cache:
+            rows = self.import_datasets()[dataset]
+            BaseProvider._lookup_cache[cache_key] = {
+                row[key_col]: row for row in rows if row.get(key_col)
+            }
+        return BaseProvider._lookup_cache[cache_key]
+
+    def resolve_dataset_field(
+        self,
+        row_data: dict | None,
+        field: str,
+        dataset: str = "countries",
+        by: tuple[tuple[str, str], ...] = (
+            ("country", "name"), ("city", "capital")),
+    ):
+        row_data = row_data or {}
+        for row_key, lookup_col in by:
+            value = row_data.get(row_key)
+            if value:
+                result = self.get_dataset_lookup(
+                    dataset, lookup_col).get(value, {}).get(field)
+                if result:
+                    return result
+        return self.get_row_data_from_datasets(dataset, field)
 
     def get_row_data_from_datasets(self, dataset: str, columns: str):
         if self.data is None:

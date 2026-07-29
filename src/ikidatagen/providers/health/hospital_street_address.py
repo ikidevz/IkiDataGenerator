@@ -7,9 +7,9 @@ class HospitalStreetAddressProvider(BaseProvider):
                          datasets=['hospital'], **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        hospital_npi = row_data.get('hospital_npi') if row_data else None
-
-        if hospital_npi:
-            return self.get_dataset_lookup('hospital', 'Hospital NPI').get(hospital_npi, {}).get('Hospital Street Address')
-
-        return self.get_row_data_from_datasets('hospital', 'Hospital Street Address')
+        return self.resolve_dataset_field(
+            row_data,
+            'Hospital Street Address',
+            dataset='hospital',
+            by=(('hospital_npi', 'Hospital NPI'),),
+        )

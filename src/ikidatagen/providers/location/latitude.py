@@ -7,12 +7,13 @@ class LatitudeProvider(BaseProvider):
                          datasets=['countries'], **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        country = (row_data or {}).get('country')
-        if isinstance(country, str) and country.strip():
-            country_row = self.get_dataset_lookup(
-                'countries', 'name').get(country, {})
-            latitude = country_row.get('latitude')
-            if latitude is not None:
-                return round(float(latitude), 6)
+        latitude = self.resolve_dataset_field(
+            row_data,
+            'latitude',
+            dataset='countries',
+            by=(('country', 'name'),),
+        )
+        if latitude is not None:
+            return round(float(latitude), 6)
 
         return round(self.generate_float(-90.0, 90.0), 6)

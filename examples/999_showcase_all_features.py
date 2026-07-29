@@ -164,6 +164,11 @@ categories_schema = [
     "first_name", "last_name", "gender_binary", {
         "key_label": "datetime",
         "label": "DOB",
+        "options": {
+            "from_date": "01-01-1990",
+            "to_date": "31-12-2010",
+            "date_format": "DD-MM-YYYY",
+        },
     },
     # Contact
     "email_address", {

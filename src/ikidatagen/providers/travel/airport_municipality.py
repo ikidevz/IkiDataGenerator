@@ -7,11 +7,9 @@ class AirportMunicipalityProvider(BaseProvider):
                          datasets=['airport'], **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        airport_code = row_data.get('airport_code') if row_data else None
-        airport_name = row_data.get('airport_name') if row_data else None
-
-        if airport_code:
-            return self.get_dataset_lookup('airport', 'iata_code').get(airport_code).get('municipality')
-        if airport_name:
-            return self.get_dataset_lookup('airport', 'name').get(airport_name).get('municipality')
-        return self.get_row_data_from_datasets('airport', 'municipality')
+        return self.resolve_dataset_field(
+            row_data,
+            'municipality',
+            dataset='airport',
+            by=(('airport_code', 'iata_code'), ('airport_name', 'name')),
+        )

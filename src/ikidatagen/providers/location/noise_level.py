@@ -17,17 +17,26 @@ class NoiseLevelProvider(BaseProvider):
         return round(self.generate_float(low, high), 1)
 
     def generate_non_blank(self, row_data=None):
-        noise_source = row_data.get('noise_source') if row_data else None
-        noise_category = row_data.get('noise_category') if row_data else None
+        row_data = row_data or {}
+        noise_source = row_data.get('noise_source')
+        noise_category = row_data.get('noise_category')
 
         if noise_source:
-            get_noise_level_DB = self.get_dataset_lookup(
-                'noise', 'Source').get(noise_source).get('Noise_Level_DB')
-            return self._parse_level(get_noise_level_DB)
+            noise_level_db = self.resolve_dataset_field(
+                row_data,
+                'Noise_Level_DB',
+                dataset='noise',
+                by=(('noise_source', 'Source'),),
+            )
+            return self._parse_level(noise_level_db)
 
         if noise_category:
-            get_noise_level_DB = self.get_dataset_lookup(
-                'noise', 'Category').get(noise_category).get('Noise_Level_DB')
-            return self._parse_level(get_noise_level_DB)
+            noise_level_db = self.resolve_dataset_field(
+                row_data,
+                'Noise_Level_DB',
+                dataset='noise',
+                by=(('noise_category', 'Category'),),
+            )
+            return self._parse_level(noise_level_db)
 
         return round(self.generate_float(20, 120), 1)

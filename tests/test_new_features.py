@@ -7,8 +7,11 @@ Tests for new P1 features:
 - Field ordering/correlation
 """
 
+import datetime
+
 import pytest
 from ikidatagen import IkiDataGenerator
+from ikidatagen.providers.basic.datetime import DatetimeProvider
 
 
 class TestSeeding:
@@ -236,6 +239,46 @@ class TestRowContext:
         row = gen.many(1).data[0]
 
         assert row["Full Name"] == f"{row['First Name']} {row['Last Name']}"
+
+
+class TestDatetimeProvider:
+    """Test that datetime providers accept common date bounds and output aliases."""
+
+    @pytest.mark.parametrize(
+        ("from_date", "to_date"),
+        [
+            ("2020-01-01", "2024-12-31"),
+            ("01/01/2020", "12/31/2024"),
+            ("01-01-2020", "31-12-2024"),
+            ("01.01.2020", "31.12.2024"),
+        ],
+    )
+    def test_datetime_bounds_accept_multiple_common_formats(self, from_date, to_date):
+        """The provider should accept common string formats for from_date and to_date."""
+        provider = DatetimeProvider(from_date=from_date, to_date=to_date)
+
+        assert provider.from_date <= provider.to_date
+
+    @pytest.mark.parametrize(
+        ("date_format", "expected"),
+        [
+            ("YYYY-MM-DD", "2020-01-15"),
+            ("DD/MM/YYYY", "15/01/2020"),
+            ("DD-MM-YYYY", "15-01-2020"),
+            ("ISO 8601 (UTC)", "2020-01-15T00:00:00Z"),
+            ("SQL datetime", "2020-01-15 00:00:00"),
+        ],
+    )
+    def test_datetime_output_supports_common_format_aliases(self, date_format, expected):
+        """The provider should format generated dates using common aliases."""
+        provider = DatetimeProvider(
+            from_date="2020-01-01",
+            to_date="2020-01-31",
+            date_format=date_format,
+        )
+
+        value = provider._format_datetime(datetime.datetime(2020, 1, 15))
+        assert value == expected
 
 
 class TestRowIndexing:

@@ -2,19 +2,16 @@ from ..base_provider import BaseProvider
 
 
 class CountryProvider(BaseProvider):
-    def __init__(self, blank_percentage: float = 0.0, **kwargs):
+    ALLOWED_FIELDS = ["name", "iso2", "iso3"]
+
+    def __init__(self, blank_percentage: float = 0.0, field: str = "name", **kwargs):
         super().__init__(blank_percentage=blank_percentage,
                          datasets=['countries'], **kwargs)
-
-        self.lookup = None
+        if field not in self.ALLOWED_FIELDS:
+            raise ValueError(
+                f"Invalid field '{field}'. Allowed values: {sorted(self.ALLOWED_FIELDS)}"
+            )
+        self.field = field
 
     def generate_non_blank(self, row_data=None):
-        if self.lookup is None:
-            self.lookup = self.get_dataset_lookup('countries', 'capital')
-
-        capital_city = row_data.get('city') if row_data else None
-
-        return (
-            self.lookup.get(capital_city, {}).get('name')
-            or self.get_row_data_from_datasets('countries', 'name')
-        )
+        return self.resolve_dataset_field(row_data, self.field, by=(("city", "capital"),))

@@ -6,15 +6,11 @@ class LanguageProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage,
                          datasets=['language'], **kwargs)
 
-        self.lookup = None
 
     def generate_non_blank(self, row_data=None):
-        if self.lookup is None:
-            self.lookup = self.get_dataset_lookup('language', 'code')
-
-        code = row_data.get('language_code') if row_data else None
-
-        return (
-            self.lookup.get(code, {}).get('name')
-            or self.get_row_data_from_datasets('language', 'name')
+        return self.resolve_dataset_field(
+            row_data,
+            'name',
+            dataset='language',
+            by=(('code', 'code'),),
         )

@@ -6,10 +6,6 @@ class NoiseCategoryProvider(BaseProvider):
         super().__init__(blank_percentage=blank_percentage,
                          datasets=['noise'], **kwargs)
 
-        self.lookup = self.get_dataset_lookup('noise', 'Source')
-        self.categories_list = list(
-            {row['Category'] for row in self.lookup.values()})
-
     def _determine_range(self, value):
         ranges = [
             (30, "20-30"),
@@ -25,14 +21,23 @@ class NoiseCategoryProvider(BaseProvider):
                     return category
 
     def generate_non_blank(self, row_data=None):
-        noise_level = row_data.get('noise_level') if row_data else None
-        noise_source = row_data.get('noise_source') if row_data else None
+        row_data = row_data or {}
+        noise_level = row_data.get('noise_level')
 
-        if noise_level:
-            return self.get_dataset_lookup('noise', 'Noise_Level_DB').get(
-                self._determine_range(noise_level)).get('Source')
+        if noise_level is not None:
+            resolved_level = self._determine_range(noise_level)
+            if resolved_level:
+                return self.resolve_dataset_field(
+                    {**row_data, 'noise_level': resolved_level},
+                    'Source',
+                    dataset='noise',
+                    by=(('noise_level', 'Noise_Level_DB'),
+                        ('noise_source', 'Source')),
+                )
 
-        if noise_source:
-            return self.get_dataset_lookup('noise', 'Noise_Level_DB').get(noise_source).get('Category')
-
-        return self.get_row_data_from_datasets('noise', 'Category')
+        return self.resolve_dataset_field(
+            row_data,
+            'Category',
+            dataset='noise',
+            by=(('noise_source', 'Source'),),
+        )

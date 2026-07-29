@@ -7,15 +7,9 @@ class ShortHexColorProvider(BaseProvider):
                          datasets=['colors'], **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        color = row_data.get('color') if row_data else None
-        hex_color = row_data.get('hex_color') if row_data else None
-
-        if color:
-            return self.get_dataset_lookup(
-                'colors', 'Name').get(color).get('Hex')[0:4].lower()
-
-        if hex_color:
-            return self.get_dataset_lookup(
-                'colors', 'Hex').get(hex_color).get('Hex')[0:4].lower()
-
-        return self.get_row_data_from_datasets('colors', 'Hex')[0:4].lower()
+        return self.resolve_dataset_field(
+            row_data,
+            'Hex',
+            dataset='colors',
+            by=(('color', 'Name'), ('hex_color', 'Hex')),
+        )[:4].lower()

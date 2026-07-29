@@ -140,7 +140,11 @@ class ProviderFactory:
             # Differentiate between the provider module itself being missing
             # and the provider module raising ModuleNotFoundError for a nested import
             missing_mod = getattr(e, "name", None)
-            if missing_mod == module_path or (missing_mod and missing_mod.startswith(module_path + ".")):
+            if (
+                missing_mod == module_path
+                or (missing_mod and missing_mod.startswith(module_path + "."))
+                or (missing_mod and module_path.startswith(missing_mod + "."))
+            ):
                 raise ValueError(
                     f"[Schema Error] Provider module not found for key_label='{key_label}', group='{resolved_group}'.\n"
                     f"  → Expected module at: {module_path}.py\n"

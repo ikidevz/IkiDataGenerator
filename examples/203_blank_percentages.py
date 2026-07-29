@@ -33,7 +33,12 @@ schema = [
     {
         "key_label": "datetime",
         "label": "DOB",
-        "options": {"blank_percentage": 15}  # 15% missing DOBs
+        "options": {
+            "blank_percentage": 15,
+            "from_date": "01-01-1980",
+            "to_date": "31-12-2005",
+            "date_format": "DD-MM-YYYY",
+        }  # 15% missing DOBs
     },
     {
         "key_label": "company_name",

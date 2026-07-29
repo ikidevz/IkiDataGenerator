@@ -7,12 +7,13 @@ class LongitudeProvider(BaseProvider):
                          datasets=['countries'], **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        country = (row_data or {}).get('country')
-        if isinstance(country, str) and country.strip():
-            country_row = self.get_dataset_lookup(
-                'countries', 'name').get(country, {})
-            longitude = country_row.get('longitude')
-            if longitude is not None:
-                return round(float(longitude), 6)
+        longitude = self.resolve_dataset_field(
+            row_data,
+            'longitude',
+            dataset='countries',
+            by=(('country', 'name'),),
+        )
+        if longitude is not None:
+            return round(float(longitude), 6)
 
         return round(self.generate_float(-180.0, 180.0), 6)

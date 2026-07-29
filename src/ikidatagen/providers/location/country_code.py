@@ -7,18 +7,9 @@ class CountryCodeProvider(BaseProvider):
                          datasets=['countries'], **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        country = row_data.get('country') if row_data else None
-        city = row_data.get('city') if row_data else None
-
-        if country:
-            country_row = self.get_dataset_lookup(
-                'countries', 'name').get(country, {})
-            if country_row.get('iso2'):
-                return country_row.get('iso2')
-        if city:
-            country_row = self.get_dataset_lookup(
-                'countries', 'capital').get(city, {})
-            if country_row.get('iso2'):
-                return country_row.get('iso2')
-
-        return self.get_row_data_from_datasets('countries', 'iso2')
+        return self.resolve_dataset_field(
+            row_data,
+            'iso2',
+            dataset='countries',
+            by=(("country", "name"), ("city", "capital")),
+        )

@@ -7,10 +7,9 @@ class HexColorProvider(BaseProvider):
                          datasets=['colors'], **kwargs)
 
     def generate_non_blank(self, row_data=None):
-        color = row_data.get('color') if row_data else None
-
-        if color:
-            return self.get_dataset_lookup(
-                'colors', 'Name').get(color).get('Hex')
-
-        return self.get_row_data_from_datasets('colors', 'Hex')
+        return self.resolve_dataset_field(
+            row_data,
+            'Hex',
+            dataset='colors',
+            by=(('color', 'Name'),),
+        )
